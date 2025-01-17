@@ -26,12 +26,12 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-zinc-100 flex items-center justify-center bg-[#121212] p-4">
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-[#0A0A0B] p-4">
       <div className={`max-w-4xl w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <h1 className="text-2xl font-semibold mb-4">ArcForge</h1>
 
         {/* Server Selector Card */}
-        <div className="rounded-lg bg-zinc-950 shadow-md p-6">
+        <div className="rounded-lg bg-[#121214] shadow-md p-6">
           <label className="block text-sm font-medium mb-1">
             Select Server
           </label>
@@ -43,7 +43,7 @@ export default function Dashboard() {
         </div>
 
         {/* Arc Selector Card */}
-        <div className="rounded-lg bg-zinc-950 shadow-md p-6">
+        <div className="rounded-lg bg-[#121214] shadow-md p-6">
           <label className="block text-sm font-medium mb-1">
             Select Arc
           </label>
@@ -55,7 +55,7 @@ export default function Dashboard() {
         </div>
 
         {/* Nickname Inputs Card */}
-        <div className="rounded-lg bg-zinc-950 shadow-md p-6">
+        <div className="rounded-lg bg-[#121214] shadow-md p-6">
           <div className="flex flex-col items-center space-y-4">
             {nicknames.map((nickname, index) => (
               <div key={index} className="flex items-center space-x-2 w-full">
