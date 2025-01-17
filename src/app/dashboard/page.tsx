@@ -13,56 +13,69 @@ export default function Dashboard() {
   const [selectedArc, setSelectedArc] = useState('')
   const [nickname, setNickname] = useState('')
   const [isLoaded, setIsLoaded] = useState(false)
+  const [nicknames, setNicknames] = useState(Array(8).fill(''))
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
 
+  const handleNicknameChange = (index: number, value: string) => {
+    const newNicknames = [...nicknames]
+    newNicknames[index] = value
+    setNicknames(newNicknames)
+  }
+
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-zinc-100 flex items-center justify-center bg-zinc-950 p-4">
-      <div className={`max-w-4xl w-full bg-zinc-900 rounded-lg shadow-md p-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-zinc-100 flex items-center justify-center bg-[#121212] p-4">
+      <div className={`max-w-4xl w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <h1 className="text-2xl font-semibold mb-4">ArcForge</h1>
-        <div className="space-y-4">
-          {/* Server Selector */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Select Server
-            </label>
-            <MenuComponent
-              items={servers}
-              selectedItem={selectedServer}
-              setSelectedItem={setSelectedServer}
-            />
-          </div>
 
-          {/* Arc Selector */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Select Arc
-            </label>
-            <MenuComponent
-              items={arcs}
-              selectedItem={selectedArc}
-              setSelectedItem={setSelectedArc}
-            />
-          </div>
+        {/* Server Selector Card */}
+        <div className="rounded-lg bg-zinc-950 shadow-md p-6">
+          <label className="block text-sm font-medium mb-1">
+            Select Server
+          </label>
+          <MenuComponent
+            items={servers}
+            selectedItem={selectedServer}
+            setSelectedItem={setSelectedServer}
+          />
+        </div>
 
-          {/* Nickname Input */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Nickname
-            </label>
-            <InputComponent
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              placeholder="Enter nickname"
-            />
+        {/* Arc Selector Card */}
+        <div className="rounded-lg bg-zinc-950 shadow-md p-6">
+          <label className="block text-sm font-medium mb-1">
+            Select Arc
+          </label>
+          <MenuComponent
+            items={arcs}
+            selectedItem={selectedArc}
+            setSelectedItem={setSelectedArc}
+          />
+        </div>
+
+        {/* Nickname Inputs Card */}
+        <div className="rounded-lg bg-zinc-950 shadow-md p-6">
+          <div className="flex flex-col items-center space-y-4">
+            {nicknames.map((nickname, index) => (
+              <div key={index} className="flex items-center space-x-2 w-full">
+                <InputComponent
+                  value={nickname}
+                  onChange={(e) => handleNicknameChange(index, e.target.value)}
+                  placeholder={`Nickname ${index + 1}`}
+                  className="w-full"
+                />
+                <ButtonComponent>Apply</ButtonComponent>
+                <ButtonComponent>Revert</ButtonComponent>
+              </div>
+            ))}
           </div>
-          {/* Buttons */}
-          <div className="flex gap-4">
-            <ButtonComponent>Apply Arc</ButtonComponent>
-            <ButtonComponent>Save Arc</ButtonComponent>
-          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-end mt-4 space-x-4">
+          <ButtonComponent>Apply Arc</ButtonComponent>
+          <ButtonComponent>Save Arc</ButtonComponent>
         </div>
       </div>
     </div>

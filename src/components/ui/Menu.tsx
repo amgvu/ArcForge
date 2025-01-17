@@ -12,7 +12,7 @@ const MenuComponent: React.FC<MenuComponentProps> = ({ items, selectedItem, setS
     const title = selectedItem ? selectedItem : '';
 
     return (
-        <Menu as="div" className="relative">
+        <Menu as="div" className="relative w-full">
             <Menu.Button className="w-full flex justify-between items-center bg-zinc-800 border border-zinc-700 rounded-md p-2 text-left h-10">
                 {title}
                 <ChevronDownIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
