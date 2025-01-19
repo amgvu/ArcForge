@@ -11,7 +11,6 @@ const arcs = ['League of Legends Arc', 'Marvel Arc']
 export default function Dashboard() {
   const [selectedServer, setSelectedServer] = useState('')
   const [selectedArc, setSelectedArc] = useState('')
-  const [nickname, setNickname] = useState('')
   const [isLoaded, setIsLoaded] = useState(false)
   const [nicknames, setNicknames] = useState(Array(8).fill(''))
 
