@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [members, setMembers] = useState<
   { user_id: string; username: string; nickname: string; tag: string }[]
 >([]);
+  const [isApplyingAll, setIsApplyingAll] = useState(false);
 
   useEffect(() => {
     setIsLoaded(true)
@@ -74,6 +75,22 @@ export default function Dashboard() {
       console.error('Error updating nickname:', err);
     } finally {
       setIsUpdating(null);
+    }
+  };
+
+  const applyAllNicknames = async () => {
+    setIsApplyingAll(true);
+    setError('');
+    
+    try {
+      for (const member of members) {
+        await updateNickname(member.user_id, member.nickname);
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to apply all nicknames');
+      console.error('Error applying nicknames:', error);
+    } finally {
+      setIsApplyingAll(false);
     }
   };
 
@@ -141,7 +158,12 @@ export default function Dashboard() {
 </div>
 
         <div className="flex justify-end mt-4 space-x-4">
-          <ButtonComponent>Apply Arc</ButtonComponent>
+          <ButtonComponent 
+            onClick={applyAllNicknames}
+            disabled={isApplyingAll || members.some(m => !m.nickname)}
+          >
+            {isApplyingAll ? 'Applying...' : 'Apply Arc'}
+          </ButtonComponent>
           <ButtonComponent>Save Arc</ButtonComponent>
         </div>
       </div>
