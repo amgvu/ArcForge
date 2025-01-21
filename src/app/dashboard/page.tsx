@@ -5,7 +5,7 @@ import MenuComponent from '@/components/ui/Menu'
 import ButtonComponent from '@/components/ui/Button'
 import InputComponent from '@/components/ui/Input'
 
-const servers = ['꒰ᵕ༚ᵕ꒱ ˖°', 'Ground Zero', 'null']
+const servers = ['꒰ᵕ༚ᵕ꒱ ˖°', 'Ground Zero', '1112651880389169153']
 const arcs = ['League of Legends Arc', 'Marvel Arc']
 
 export default function Dashboard() {
@@ -25,7 +25,7 @@ export default function Dashboard() {
 
   const fetchMembers = async (guildId: string) => {
     try {
-      const response = await fetch(`http://localhost:3002/api/members/${guildId}`);
+      const response = await fetch(`http://localhost:3000/api/members/${guildId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch members');
       }
@@ -47,7 +47,7 @@ export default function Dashboard() {
       setIsUpdating(userId);
       setError(null);
   
-      const response = await fetch('http://localhost:3002/api/nickname', {
+      const response = await fetch('http://localhost:3000/api/nickname', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
