@@ -47,7 +47,7 @@ export default function Dashboard() {
       setIsUpdating(userId);
       setError(null);
   
-      const response = await fetch('http://localhost:3000/api/nickname', {
+      const response = await fetch('http://localhost:3000/api/changeNickname', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
