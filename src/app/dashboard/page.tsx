@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import MenuComponent from '@/components/ui/Menu'
 import ButtonComponent from '@/components/ui/Button'
 import InputComponent from '@/components/ui/Input'
+import Image from 'next/image'
 
 const servers = ['꒰ᵕ༚ᵕ꒱ ˖°', 'Ground Zero', '1112651880389169153']
 const arcs = ['League of Legends Arc', 'Marvel Arc']
@@ -15,7 +16,7 @@ export default function Dashboard() {
   const [isUpdating, setIsUpdating] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [members, setMembers] = useState<
-  { user_id: string; username: string; nickname: string; tag: string }[]
+  { user_id: string; username: string; nickname: string; tag: string; avatar_url: string }[]
 >([]);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
 
@@ -124,40 +125,51 @@ export default function Dashboard() {
         </div>
 
         <div className="rounded-lg bg-[#121214] shadow-md p-6">
-  {error && (
-    <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
-      {error}
-    </div>
-  )}
-  <div className="flex flex-col items-center space-y-4">
-    {members.map((member, index) => (
-      <div key={member.user_id} className="flex items-center space-x-2 w-full">
-        <div className="flex-1">
-          <InputComponent
-            value={member.nickname}
-            onChange={(e) => {
-              const updatedMembers = [...members];
-              updatedMembers[index] = { ...updatedMembers[index], nickname: e.target.value };
-              setMembers(updatedMembers);
-            }}
-            placeholder={`Nickname for ${member.username}`}
-            className="w-full"
-            disabled={isUpdating === member.user_id}
-          />
-          <div className="text-sm text-gray-400 mt-1">
-            {member.username}#{member.tag}
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
+              {error}
+            </div>
+          )}
+          <div className="flex flex-col items-center space-y-4">
+              {members.map((member, index) => (
+                <div key={member.user_id} className="flex items-center space-x-2 w-full">
+                  <Image
+                    src={member.avatar_url} 
+                    alt={`${member.username}'s avatar`}
+                    width={40}
+                    height={40} 
+                    className="w-10 h-10 rounded-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/default-avatar.png';
+                    }}
+                  />
+
+                  <div className="flex-1">
+                    <InputComponent
+                      value={member.nickname}
+                      onChange={(e) => {
+                        const updatedMembers = [...members];
+                        updatedMembers[index] = { ...updatedMembers[index], nickname: e.target.value };
+                        setMembers(updatedMembers);
+                      }}
+                      placeholder={`Nickname for ${member.username}`}
+                      className="w-full"
+                      disabled={isUpdating === member.user_id}
+                    />
+                    <div className="text-sm relative text-gray-400 mt-1">
+                      {member.username}{member.tag}
+                    </div>
+                  </div>
+                  <ButtonComponent
+                    onClick={() => updateNickname(member.user_id, member.nickname)}
+                    disabled={isUpdating === member.user_id || !member.nickname}
+                  >
+                    {isUpdating === member.user_id ? 'Applying...' : 'Apply'}
+                  </ButtonComponent>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <ButtonComponent
-          onClick={() => updateNickname(member.user_id, member.nickname)}
-          disabled={isUpdating === member.user_id || !member.nickname}
-        >
-          {isUpdating === member.user_id ? 'Applying...' : 'Apply'}
-        </ButtonComponent>
-      </div>
-    ))}
-  </div>
-</div>
 
         <div className="flex justify-end mt-4 space-x-4">
           <ButtonComponent 
