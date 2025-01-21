@@ -81,11 +81,13 @@ export default function Dashboard() {
   const applyAllNicknames = async () => {
     setIsApplyingAll(true);
     setError('');
-    
+  
     try {
-      for (const member of members) {
-        await updateNickname(member.user_id, member.nickname);
-      }
+      const updatePromises = members.map((member) =>
+        updateNickname(member.user_id, member.nickname)
+      );
+  
+      await Promise.all(updatePromises);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to apply all nicknames');
       console.error('Error applying nicknames:', error);
