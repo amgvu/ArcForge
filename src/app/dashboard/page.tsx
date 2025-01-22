@@ -181,7 +181,7 @@ export default function Dashboard() {
 
           <div className="rounded-lg bg-[#121214] shadow-md p-6">
             {error && (
-              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
+              <div className="mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
                 {error}
               </div>
             )}
