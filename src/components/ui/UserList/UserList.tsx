@@ -1,4 +1,4 @@
-import { UserListCard } from '../UserListCard/UserListCard';
+import { UserListCard } from '../UserListCard/UserListCard'; 
 import { styles } from './UserList.styles';
 
 interface Member {
@@ -26,13 +26,14 @@ export const DSUserList: React.FC<UserListProps> = ({
     <div className={styles.scrollContainer}>
       <div className={styles.container}>
         {members.map((member, index) => (
-          <UserListCard
-            key={member.user_id}
-            member={member}
-            isUpdating={isUpdating === member.user_id}
-            onNicknameChange={(nickname) => onNicknameChange(index, nickname)}
-            onApplyNickname={() => onApplyNickname(member.user_id, member.nickname)}
-          />
+          <div key={member.user_id} className="mb-4">
+            <UserListCard
+              member={member}
+              isUpdating={isUpdating === member.user_id}
+              onNicknameChange={(nickname) => onNicknameChange(index, nickname)}
+              onApplyNickname={() => onApplyNickname(member.user_id, member.nickname)}
+            />
+          </div>
         ))}
       </div>
     </div>
