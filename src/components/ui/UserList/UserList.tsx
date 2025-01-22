@@ -1,7 +1,5 @@
-// components/UserList.tsx
-import Image from 'next/image';
-import { DSInput, DSButton } from '@/components';
-import { styles } from './UserList.styles'; // Import styles
+import { UserListCard } from '../UserListCard/UserListCard';
+import { styles } from './UserList.styles';
 
 interface Member {
   user_id: string;
@@ -25,40 +23,18 @@ export const DSUserList: React.FC<UserListProps> = ({
   onApplyNickname,
 }) => {
   return (
-    <div className={styles.container}>
-      {members.map((member, index) => (
-        <div key={member.user_id} className={styles.memberItem}>
-          <Image
-            src={member.avatar_url}
-            alt={`${member.username}'s avatar`}
-            width={40}
-            height={40}
-            className={styles.avatar}
-            onError={(e) => {
-              e.currentTarget.src = '/default-avatar.png';
-            }}
+    <div className={styles.scrollContainer}>
+      <div className={styles.container}>
+        {members.map((member, index) => (
+          <UserListCard
+            key={member.user_id}
+            member={member}
+            isUpdating={isUpdating === member.user_id}
+            onNicknameChange={(nickname) => onNicknameChange(index, nickname)}
+            onApplyNickname={() => onApplyNickname(member.user_id, member.nickname)}
           />
-          <div className={styles.memberDetails}>
-            <DSInput
-              value={member.nickname}
-              onChange={(e) => onNicknameChange(index, e.target.value)}
-              placeholder={`Nickname for ${member.username}`}
-              className={styles.nicknameInput}
-              disabled={isUpdating === member.user_id}
-            />
-            <div className={styles.username}>
-              {member.username}{member.tag}
-            </div>
-          </div>
-          
-          <DSButton
-            onClick={() => onApplyNickname(member.user_id, member.nickname)}
-            disabled={isUpdating === member.user_id || !member.nickname}
-          >
-            {isUpdating === member.user_id ? 'Applying...' : 'Apply'}
-          </DSButton>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
