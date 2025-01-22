@@ -3,13 +3,13 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { menuButtonStyles, menuItemsStyles, menuItemStyles } from './Menu.styles';
 
-interface MenuComponentProps {
+interface DSMenuProps {
   items: string[];
   selectedItem: string;
   setSelectedItem: (item: string) => void;
 }
 
-const MenuComponent: React.FC<MenuComponentProps> = ({ items, selectedItem, setSelectedItem }) => {
+const DSMenu: React.FC<DSMenuProps> = ({ items, selectedItem, setSelectedItem }) => {
   const title = selectedItem ? selectedItem : '';
 
   return (
@@ -48,4 +48,4 @@ const MenuComponent: React.FC<MenuComponentProps> = ({ items, selectedItem, setS
   );
 };
 
-export default MenuComponent;
+export default DSMenu;

@@ -6,7 +6,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
 }
 
-const InputComponent = forwardRef<HTMLInputElement, InputProps>(({ label, className, ...props }, ref) => {
+const DSInput = forwardRef<HTMLInputElement, InputProps>(({ label, className, ...props }, ref) => {
   return (
     <div className={inputContainerStyles(className)}>
       {label && <label className={inputLabelStyles}>{label}</label>}
@@ -15,6 +15,6 @@ const InputComponent = forwardRef<HTMLInputElement, InputProps>(({ label, classN
   );
 });
 
-InputComponent.displayName = 'Input';
+DSInput.displayName = 'Input';
 
-export default InputComponent;
+export default DSInput;

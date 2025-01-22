@@ -7,7 +7,7 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-const ButtonComponent: React.FC<ButtonProps> = ({ children, onClick, disabled = false }) => {
+const DSButton: React.FC<ButtonProps> = ({ children, onClick, disabled = false }) => {
   return (
     <Button onClick={onClick} disabled={disabled} className={buttonStyles(disabled)}>
       {children}
@@ -15,4 +15,4 @@ const ButtonComponent: React.FC<ButtonProps> = ({ children, onClick, disabled = 
   );
 };
 
-export default ButtonComponent;
+export default DSButton;

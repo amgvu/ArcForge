@@ -1,3 +1,3 @@
-export { default as MenuComponent } from './ui/Menu/Menu';
-export { default as ButtonComponent } from './ui/Button/Button';
-export { default as InputComponent } from './ui/Input/Input';
+export { default as DSMenu  } from './ui/Menu/Menu';
+export { default as DSButton } from './ui/Button/Button';
+export { default as DSInput } from './ui/Input/Input';

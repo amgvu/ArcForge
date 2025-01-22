@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MenuComponent, ButtonComponent, InputComponent } from '@/components';
+import { DSButton, DSMenu, DSInput } from '@/components';
 import Image from 'next/image'
 
 const servers = ['꒰ᵕ༚ᵕ꒱ ˖°', 'Ground Zero', '1112651880389169153']
@@ -104,7 +104,7 @@ export default function Dashboard() {
           <label className="block text-sm font-medium mb-1">
             Select Server
           </label>
-          <MenuComponent
+          <DSMenu
             items={servers}
             selectedItem={selectedServer}
             setSelectedItem={setSelectedServer}
@@ -115,7 +115,7 @@ export default function Dashboard() {
           <label className="block text-sm font-medium mb-1">
             Select Arc
           </label>
-          <MenuComponent
+          <DSMenu
             items={arcs}
             selectedItem={selectedArc}
             setSelectedItem={setSelectedArc}
@@ -143,7 +143,7 @@ export default function Dashboard() {
                   />
 
                   <div className="flex-1">
-                    <InputComponent
+                    <DSInput
                       value={member.nickname}
                       onChange={(e) => {
                         const updatedMembers = [...members];
@@ -158,25 +158,25 @@ export default function Dashboard() {
                       {member.username}{member.tag}
                     </div>
                   </div>
-                  <ButtonComponent
+                  <DSButton
                     onClick={() => updateNickname(member.user_id, member.nickname)}
                     disabled={isUpdating === member.user_id || !member.nickname}
                   >
                     {isUpdating === member.user_id ? 'Applying...' : 'Apply'}
-                  </ButtonComponent>
+                  </DSButton>
                 </div>
               ))}
             </div>
           </div>
 
         <div className="flex justify-end mt-4 space-x-4">
-          <ButtonComponent 
+          <DSButton 
             onClick={applyAllNicknames}
             disabled={isApplyingAll || members.some(m => !m.nickname)}
           >
             {isApplyingAll ? 'Applying...' : 'Apply Arc'}
-          </ButtonComponent>
-          <ButtonComponent>Save Arc</ButtonComponent>
+          </DSButton>
+          <DSButton>Save Arc</DSButton>
         </div>
       </div>
     </div>
