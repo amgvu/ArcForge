@@ -13,7 +13,7 @@ const DSMenu: React.FC<DSMenuProps> = ({ items, selectedItem, setSelectedItem })
   const title = selectedItem ? selectedItem : '';
 
   return (
-    <Menu as="div" className="relative w-full">
+    <Menu as="div" className="relative m-2 w-full">
       <Menu.Button className={menuButtonStyles}>
         {title}
         <ChevronDownIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
