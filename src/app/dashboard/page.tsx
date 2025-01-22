@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import MenuComponent from '@/components/ui/Menu'
-import ButtonComponent from '@/components/ui/Button'
-import InputComponent from '@/components/ui/Input'
+import { MenuComponent, ButtonComponent, InputComponent } from '@/components';
 import Image from 'next/image'
 
 const servers = ['꒰ᵕ༚ᵕ꒱ ˖°', 'Ground Zero', '1112651880389169153']
