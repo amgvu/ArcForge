@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.2.0",
     "@supabase/supabase-js": "^2.47.15",
     "next": "15.1.4",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

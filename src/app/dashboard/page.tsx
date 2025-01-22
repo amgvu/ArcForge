@@ -1,26 +1,34 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
+import { useSession, signIn } from 'next-auth/react';
+import { useState, useEffect } from 'react';
 import { DSButton, DSMenu, DSInput } from '@/components';
-import Image from 'next/image'
+import Image from 'next/image';
 
-const servers = ['꒰ᵕ༚ᵕ꒱ ˖°', 'Ground Zero', '1112651880389169153']
-const arcs = ['League of Legends Arc', 'Marvel Arc']
+const servers = ['꒰ᵕ༚ᵕ꒱ ˖°', 'Ground Zero', '1112651880389169153'];
+const arcs = ['League of Legends Arc', 'Marvel Arc'];
 
 export default function Dashboard() {
-  const [selectedServer, setSelectedServer] = useState('')
-  const [selectedArc, setSelectedArc] = useState('')
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [isUpdating, setIsUpdating] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { data: session, status } = useSession();
+  const [selectedServer, setSelectedServer] = useState('');
+  const [selectedArc, setSelectedArc] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isUpdating, setIsUpdating] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [members, setMembers] = useState<
-  { user_id: string; username: string; nickname: string; tag: string; avatar_url: string }[]
->([]);
+    { user_id: string; username: string; nickname: string; tag: string; avatar_url: string }[]
+  >([]);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
 
   useEffect(() => {
-    setIsLoaded(true)
-  }, [])
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      signIn('discord');
+    }
+  }, [status]);
 
   const fetchMembers = async (guildId: string) => {
     try {
@@ -34,7 +42,7 @@ export default function Dashboard() {
       console.error('Error fetching members:', error);
     }
   };
-  
+
   useEffect(() => {
     if (selectedServer) {
       fetchMembers(selectedServer);
@@ -45,7 +53,7 @@ export default function Dashboard() {
     try {
       setIsUpdating(userId);
       setError(null);
-  
+
       const response = await fetch('http://localhost:3000/api/changeNickname', {
         method: 'POST',
         headers: {
@@ -57,17 +65,17 @@ export default function Dashboard() {
           nickname,
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        
+
         if (response.status === 403 && errorData.code === 50013) {
           throw new Error('Cannot change nickname of server owner or users with higher roles');
         }
-        
+
         throw new Error(errorData.message || 'Failed to update nickname');
       }
-  
+
       console.log('Nickname updated successfully');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -80,12 +88,12 @@ export default function Dashboard() {
   const applyAllNicknames = async () => {
     setIsApplyingAll(true);
     setError('');
-  
+
     try {
       const updatePromises = members.map((member) =>
         updateNickname(member.user_id, member.nickname)
       );
-  
+
       await Promise.all(updatePromises);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to apply all nicknames');
@@ -94,6 +102,14 @@ export default function Dashboard() {
       setIsApplyingAll(false);
     }
   };
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return <div>Redirecting to sign-in...</div>;
+  }
 
   return (
     <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-[#0A0A0B] p-4">
@@ -129,48 +145,48 @@ export default function Dashboard() {
             </div>
           )}
           <div className="flex flex-col items-center space-y-4">
-              {members.map((member, index) => (
-                <div key={member.user_id} className="flex items-center space-x-2 w-full">
-                  <Image
-                    src={member.avatar_url} 
-                    alt={`${member.username}'s avatar`}
-                    width={40}
-                    height={40} 
-                    className="w-10 h-10 rounded-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = '/default-avatar.png';
-                    }}
-                  />
+            {members.map((member, index) => (
+              <div key={member.user_id} className="flex items-center space-x-2 w-full">
+                <Image
+                  src={member.avatar_url}
+                  alt={`${member.username}'s avatar`}
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 rounded-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = '/default-avatar.png';
+                  }}
+                />
 
-                  <div className="flex-1">
-                    <DSInput
-                      value={member.nickname}
-                      onChange={(e) => {
-                        const updatedMembers = [...members];
-                        updatedMembers[index] = { ...updatedMembers[index], nickname: e.target.value };
-                        setMembers(updatedMembers);
-                      }}
-                      placeholder={`Nickname for ${member.username}`}
-                      className="w-full"
-                      disabled={isUpdating === member.user_id}
-                    />
-                    <div className="text-sm relative text-gray-400 mt-1">
-                      {member.username}{member.tag}
-                    </div>
+                <div className="flex-1">
+                  <DSInput
+                    value={member.nickname}
+                    onChange={(e) => {
+                      const updatedMembers = [...members];
+                      updatedMembers[index] = { ...updatedMembers[index], nickname: e.target.value };
+                      setMembers(updatedMembers);
+                    }}
+                    placeholder={`Nickname for ${member.username}`}
+                    className="w-full"
+                    disabled={isUpdating === member.user_id}
+                  />
+                  <div className="text-sm relative text-gray-400 mt-1">
+                    {member.username}{member.tag}
                   </div>
-                  <DSButton
-                    onClick={() => updateNickname(member.user_id, member.nickname)}
-                    disabled={isUpdating === member.user_id || !member.nickname}
-                  >
-                    {isUpdating === member.user_id ? 'Applying...' : 'Apply'}
-                  </DSButton>
                 </div>
-              ))}
-            </div>
+                <DSButton
+                  onClick={() => updateNickname(member.user_id, member.nickname)}
+                  disabled={isUpdating === member.user_id || !member.nickname}
+                >
+                  {isUpdating === member.user_id ? 'Applying...' : 'Apply'}
+                </DSButton>
+              </div>
+            ))}
           </div>
+        </div>
 
         <div className="flex justify-end mt-4 space-x-4">
-          <DSButton 
+          <DSButton
             onClick={applyAllNicknames}
             disabled={isApplyingAll || members.some(m => !m.nickname)}
           >
@@ -180,5 +196,5 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }
