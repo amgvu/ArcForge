@@ -1,11 +1,11 @@
 'use client';
 
 import { useSession, signIn } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { DSButton, DSMenu, DSInput } from '@/components';
 import Image from 'next/image';
+import { Server } from '@/types/servers';
 
-const servers = ['꒰ᵕ༚ᵕ꒱ ˖°', 'Ground Zero', '1112651880389169153'];
 const arcs = ['League of Legends Arc', 'Marvel Arc'];
 
 export default function Dashboard() {
@@ -19,6 +19,8 @@ export default function Dashboard() {
     { user_id: string; username: string; nickname: string; tag: string; avatar_url: string }[]
   >([]);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
+  const [servers, setServers] = useState<Server[]>([]);
+  const [selectedServerName, setSelectedServerName] = useState<string>('');
 
   useEffect(() => {
     setIsLoaded(true);
@@ -30,6 +32,42 @@ export default function Dashboard() {
     }
   }, [status]);
 
+  const fetchSameServers = useCallback(async () => {
+    if (session?.accessToken && session.user?.id) {
+      try {
+        const response = await fetch('http://localhost:3000/api/servers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            accessToken: session.accessToken,
+            userId: session.user.id,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Failed to fetch servers: ${errorData.error || response.statusText}`);
+        }
+
+        const data = await response.json();
+        setServers(data.map((server: Server) => ({
+          name: server.name,
+          id: server.id,
+        })));
+      } catch (error) {
+        setError(error instanceof Error ? error.message : 'Failed to fetch servers');
+      }
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchSameServers();
+    }
+  }, [status, fetchSameServers, session?.accessToken, session?.user?.id]);
+
   const fetchMembers = async (guildId: string) => {
     try {
       const response = await fetch(`http://localhost:3000/api/members/${guildId}`);
@@ -39,7 +77,7 @@ export default function Dashboard() {
       const data = await response.json();
       setMembers(data);
     } catch (error) {
-      console.error('Error fetching members:', error);
+      setError(error instanceof Error ? error.message : 'Failed to fetch members');
     }
   };
 
@@ -68,18 +106,13 @@ export default function Dashboard() {
 
       if (!response.ok) {
         const errorData = await response.json();
-
         if (response.status === 403 && errorData.code === 50013) {
           throw new Error('Cannot change nickname of server owner or users with higher roles');
         }
-
         throw new Error(errorData.message || 'Failed to update nickname');
       }
-
-      console.log('Nickname updated successfully');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error updating nickname:', err);
     } finally {
       setIsUpdating(null);
     }
@@ -93,11 +126,9 @@ export default function Dashboard() {
       const updatePromises = members.map((member) =>
         updateNickname(member.user_id, member.nickname)
       );
-
       await Promise.all(updatePromises);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to apply all nicknames');
-      console.error('Error applying nicknames:', error);
     } finally {
       setIsApplyingAll(false);
     }
@@ -117,20 +148,25 @@ export default function Dashboard() {
         <h1 className="text-2xl font-semibold mb-4">ArcForge</h1>
 
         <div className="rounded-lg bg-[#121214] shadow-md p-6">
-          <label className="block text-sm font-medium mb-1">
-            Select Server
-          </label>
+          <label className="block text-sm font-medium mb-1">Select Server</label>
           <DSMenu
-            items={servers}
-            selectedItem={selectedServer}
-            setSelectedItem={setSelectedServer}
+            items={servers.map(server => server.name)}
+            selectedItem={selectedServerName}
+            setSelectedItem={(value) => {
+              const selected = servers.find(server => server.name === value);
+              if (selected) {
+                setSelectedServerName(selected.name);
+                setSelectedServer(selected.id);
+              } else {
+                setSelectedServerName('');
+                setSelectedServer('');
+              }
+            }}
           />
         </div>
 
         <div className="rounded-lg bg-[#121214] shadow-md p-6">
-          <label className="block text-sm font-medium mb-1">
-            Select Arc
-          </label>
+          <label className="block text-sm font-medium mb-1">Select Arc</label>
           <DSMenu
             items={arcs}
             selectedItem={selectedArc}
@@ -157,7 +193,6 @@ export default function Dashboard() {
                     e.currentTarget.src = '/default-avatar.png';
                   }}
                 />
-
                 <div className="flex-1">
                   <DSInput
                     value={member.nickname}

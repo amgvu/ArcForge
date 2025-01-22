@@ -1,6 +1,15 @@
 import NextAuth from 'next-auth';
 import DiscordProvider from 'next-auth/providers/discord';
 
+interface DiscordProfile {
+  id: string;
+  username: string;
+  avatar: string;
+  discriminator: string;
+  email?: string;
+  verified?: boolean;
+}
+
 const handler = NextAuth({
   providers: [
     DiscordProvider({
@@ -8,20 +17,24 @@ const handler = NextAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'identify email guilds',
+          scope: 'identify guilds',
         },
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, profile }) {
       if (account) {
         token.accessToken = account.access_token;
+      }
+      if (profile) {
+        token.id = (profile as DiscordProfile).id;
       }
       return token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
+      session.user.id = token.sub as string;
       return session;
     },
   },
