@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [members, setMembers] = useState<
-    { user_id: string; username: string; nickname: string; tag: string; avatar_url: string; discriminator: string; }[]
+    { user_id: string; username: string; nickname: string; tag: string; avatar_url: string; }[]
   >([]);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
   const [servers, setServers] = useState<Server[]>([]);
@@ -94,11 +94,11 @@ export default function Dashboard() {
     }
   }, [selectedServer]);
 
-  const updateNickname = async (userId: string, nickname: string) => {
+  const updateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
     try {
       setIsUpdating(userId);
       setError(null);
-  
+
       const response = await fetch('http://localhost:3000/api/changeNickname', {
         method: 'POST',
         headers: {
@@ -110,7 +110,7 @@ export default function Dashboard() {
           nickname,
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         if (response.status === 403 && errorData.code === 50013) {
@@ -118,32 +118,34 @@ export default function Dashboard() {
         }
         throw new Error(errorData.message || 'Failed to update nickname');
       }
-  
-      const member = members.find((m) => m.user_id === userId);
-      if (member) {
-        const saveResponse = await fetch('http://localhost:3000/api/save-nicknames', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            guildId: selectedServer,
-            nicknames: [
-              {
-                userId: member.user_id,
-                nickname: member.nickname,
-                userTag: member.tag,
-              },
-            ],
-          }),
-        });
-  
-        if (!saveResponse.ok) {
-          const errorData = await saveResponse.json();
-          throw new Error(errorData.error || 'Failed to save nickname');
+
+      if (saveToDb) {
+        const member = members.find((m) => m.user_id === userId);
+        if (member) {
+          const saveResponse = await fetch('http://localhost:3000/api/save-nicknames', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              guildId: selectedServer,
+              nicknames: [
+                {
+                  userId: member.user_id,
+                  nickname: member.nickname,
+                  userTag: member.tag,
+                },
+              ],
+            }),
+          });
+
+          if (!saveResponse.ok) {
+            const errorData = await saveResponse.json();
+            throw new Error(errorData.error || 'Failed to save nickname');
+          }
+
+          console.log('Nickname saved successfully:', member.nickname);
         }
-  
-        console.log('Nickname saved successfully:', member.nickname);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -152,10 +154,7 @@ export default function Dashboard() {
     }
   };
 
-  const applyAllNicknames = async () => {
-    setIsApplyingAll(true);
-    setError('');
-  
+  const saveAllNicknames = async () => {
     try {
       const nicknamesToSave = members.map((member) => {
         const userTag = member.username;
@@ -165,9 +164,9 @@ export default function Dashboard() {
           userTag: userTag,
         };
       });
-  
+
       console.log('Nicknames to save:', nicknamesToSave);
-  
+
       const saveResponse = await fetch('http://localhost:3000/api/save-nicknames', {
         method: 'POST',
         headers: {
@@ -178,13 +177,32 @@ export default function Dashboard() {
           nicknames: nicknamesToSave,
         }),
       });
-  
+
       if (!saveResponse.ok) {
         const errorData = await saveResponse.json();
         throw new Error(errorData.error || 'Failed to save nicknames');
       }
-  
+
       console.log('All nicknames saved successfully:', nicknamesToSave);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const applyAllNicknames = async () => {
+    setIsApplyingAll(true);
+    setError('');
+
+    try {
+      await saveAllNicknames();
+
+      const updatePromises = members.map((member) =>
+        updateNickname(member.user_id, member.nickname, false)
+      );
+
+      await Promise.all(updatePromises);
+
+      console.log('All nicknames updated successfully');
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to apply all nicknames');
     } finally {
@@ -248,7 +266,7 @@ export default function Dashboard() {
               members={members}
               isUpdating={isUpdating}
               onNicknameChange={handleNicknameChange}
-              onApplyNickname={updateNickname}
+              onApplyNickname={(userId, nickname) => updateNickname(userId, nickname, true)}
             />
           </div>
         </div>
