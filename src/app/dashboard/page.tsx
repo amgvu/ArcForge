@@ -6,7 +6,7 @@ import { DSButton, DSMenu, DSUserList } from "@/components";
 import { useServers, useMembers, Member } from "@/lib/hooks";
 import { updateNickname, saveNicknames, Nickname } from "@/lib/utils";
 import { ArcNickname } from "@/types/types";
-import { createArc, saveArcNicknames, checkExistingArc } from "@/lib/utils/api";
+import { createArc, saveArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utils/api";
 
 const arcs = ['League of Legends Arc', 'Marvel Arc'];
 
@@ -101,29 +101,37 @@ export default function Dashboard() {
     setIsSavingArc(true);
   
     try {
-      const arcExists = await checkExistingArc(selectedServer, selectedArc);
+      const existingArc = await checkExistingArc(selectedServer, selectedArc);
   
-      if (arcExists) {
-        alert('An arc with this name already exists for the selected server. Please choose a different name.');
-        return;
+      if (existingArc) {
+        const confirmOverwrite = window.confirm(
+          'An arc with this name already exists. Do you want to overwrite it with the new set of nicknames?'
+        );
+  
+        if (!confirmOverwrite) {
+          return;
+        }
+  
+        await deleteArcNicknames(existingArc.id);
       }
   
-      const arc = await createArc(selectedServer, selectedArc);
+      const arc = existingArc || (await createArc(selectedServer, selectedArc));
   
-      const arcNicknames: ArcNickname[] = members.map((member) => {
+      const newNicknames: ArcNickname[] = members.map((member) => {
         if (!member.tag && !member.username) {
           throw new Error(`User tag and username are missing for user ${member.user_id}`);
         }
   
         return {
           arc_id: arc.id!,
+          guild_id: selectedServer,
           user_id: member.user_id,
           nickname: member.nickname,
           userTag: member.tag || member.username,
         };
       });
   
-      await saveArcNicknames(arcNicknames);
+      await saveArcNicknames(newNicknames);
   
       alert('Arc saved successfully!');
     } catch (error) {

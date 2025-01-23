@@ -96,17 +96,23 @@ export const createArc = async (guildId: string, arcName: string): Promise<Arc> 
 export const saveArcNicknames = async (arcNicknames: ArcNickname[]): Promise<void> => {
   const { error } = await supabase
     .from('arc_nicknames')
-    .insert(arcNicknames);
+    .insert(arcNicknames.map((nickname) => ({
+      arc_id: nickname.arc_id,
+      guild_id: nickname.guild_id,
+      user_id: nickname.user_id,
+      nickname: nickname.nickname,
+      user_tag: nickname.userTag,
+    })));
 
   if (error) {
     throw new Error(error.message);
   }
 };
 
-export const checkExistingArc = async (guildId: string, arcName: string): Promise<boolean> => {
+export const checkExistingArc = async (guildId: string, arcName: string): Promise<Arc | null> => {
   const { data, error } = await supabase
     .from('arcs')
-    .select('id')
+    .select('*')
     .eq('guild_id', guildId)
     .eq('arc_name', arcName)
     .single();
@@ -115,5 +121,73 @@ export const checkExistingArc = async (guildId: string, arcName: string): Promis
     throw new Error(error.message);
   }
 
-  return !!data;
+  return data;
+};
+
+export const fetchArcNicknames = async (arcId: number): Promise<ArcNickname[]> => {
+  const { data, error } = await supabase
+    .from('arc_nicknames')
+    .select('*')
+    .eq('arc_id', arcId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const deleteArcNicknames = async (arcId: number): Promise<void> => {
+  const { error } = await supabase
+    .from('arc_nicknames')
+    .delete()
+    .eq('arc_id', arcId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+};
+
+const compareNicknames = (nicknames1: ArcNickname[], nicknames2: ArcNickname[]): boolean => {
+  if (nicknames1.length !== nicknames2.length) {
+    return false;
+  }
+
+  const sorted1 = nicknames1.sort((a, b) => a.user_id.localeCompare(b.user_id));
+  const sorted2 = nicknames2.sort((a, b) => a.user_id.localeCompare(b.user_id));
+
+  for (let i = 0; i < sorted1.length; i++) {
+    if (
+      sorted1[i].user_id !== sorted2[i].user_id ||
+      sorted1[i].nickname !== sorted2[i].nickname
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const checkDuplicateArcNicknames = async (
+  guildId: string,
+  newNicknames: ArcNickname[]
+): Promise<boolean> => {
+  const { data: arcs, error: arcsError } = await supabase
+    .from('arcs')
+    .select('id')
+    .eq('guild_id', guildId);
+
+  if (arcsError) {
+    throw new Error(arcsError.message);
+  }
+
+  for (const arc of arcs) {
+    const existingNicknames = await fetchArcNicknames(arc.id);
+
+    if (compareNicknames(newNicknames, existingNicknames)) {
+      return true;
+    }
+  }
+
+  return false;
 };

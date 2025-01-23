@@ -12,13 +12,14 @@ export interface Member {
 }
 
 export interface Arc {
-  id?: number;
+  id: number;
   name: string;
   guild_id: string;
 }
 
 export interface ArcNickname {
   arc_id: number;
+  guild_id: string;
   user_id: string;
   nickname: string;
   userTag: string;
