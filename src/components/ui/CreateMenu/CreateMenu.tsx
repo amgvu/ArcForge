@@ -15,7 +15,6 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
   selectedServer,
   selectedArc,
   setSelectedArc,
-  onCreateNewArc,
 }) => {
   const [query, setQuery] = useState('');
   const [arcs, setArcs] = useState<Arc[]>([]);
@@ -59,7 +58,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
           onFocus={handleOpen}
           displayValue={(arc: Arc | null) => arc?.arc_name || ''}
           onChange={(event) => setQuery(event.target.value)}
-          className="w-full p-2 pr-10 bg-[#121214] border border-zinc-700 rounded-md text-[#D7DADC] focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          className="w-full p-2 pr-10 bg-zinc-800 border border-zinc-700 rounded-md text-[#D7DADC] focus:outline-none focus:ring-2 focus:ring-zinc-500"
           placeholder="Select or create an arc"
         />
         <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -104,7 +103,6 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
                   )}
                 </Combobox.Option>
               ))}
-
               {showCreateOption && (
                 <Combobox.Option
                   value={{ id: -1, arc_name: query, guild_id: selectedServer }}
@@ -112,7 +110,6 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
                     relative cursor-default select-none py-2 pl-4 pr-4 flex items-center
                     ${active ? 'bg-zinc-800 text-[#D7DADC]' : 'text-[#D7DADC]'}
                   `}
-                  onClick={() => onCreateNewArc(query)}
                 >
                   <PlusIcon className="h-4 w-4 mr-2 text-zinc-400" />
                   <span className="block truncate">Create &apos;{query}&apos;</span>

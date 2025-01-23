@@ -115,35 +115,35 @@ export default function Dashboard() {
   };
 
   const handleSaveArc = async () => {
-    if (!selectedServer || !selectedArc || members.length === 0) {
+    if (!selectedServer || !selectedArc || !selectedArc.arc_name) {
       alert('Please select a server, arc, and ensure members are loaded.');
       return;
     }
-
+  
     setIsSavingArc(true);
-
+  
     try {
-      const existingArc = await checkExistingArc(selectedServer, selectedArc.name);
-
+      const existingArc = await checkExistingArc(selectedServer, selectedArc.arc_name);
+  
       if (existingArc) {
         const confirmOverwrite = window.confirm(
           'An arc with this name already exists. Do you want to overwrite it with the new set of nicknames?'
         );
-
+  
         if (!confirmOverwrite) {
           return;
         }
-
+  
         await deleteArcNicknames(existingArc.id);
       }
-
-      const arc = existingArc || (await createArc(selectedServer, selectedArc.name));
-
+  
+      const arc = existingArc || (await createArc(selectedServer, selectedArc.arc_name));
+  
       const newNicknames: ArcNickname[] = members.map((member) => {
         if (!member.tag && !member.username) {
           throw new Error(`User tag and username are missing for user ${member.user_id}`);
         }
-
+  
         return {
           arc_id: arc.id!,
           guild_id: selectedServer,
@@ -152,9 +152,9 @@ export default function Dashboard() {
           userTag: member.tag || member.username,
         };
       });
-
+  
       await saveArcNicknames(newNicknames);
-
+  
       alert('Arc saved successfully!');
     } catch (error) {
       console.error(error);
