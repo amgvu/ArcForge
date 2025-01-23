@@ -34,6 +34,12 @@ export default function Dashboard() {
   const fetchSameServers = useCallback(async () => {
     if (session?.accessToken && session.user?.id) {
       try {
+        const cachedServers = localStorage.getItem('cachedServers');
+        if (cachedServers) {
+          setServers(JSON.parse(cachedServers));
+          return;
+        }
+
         const response = await fetch('http://localhost:3000/api/servers', {
           method: 'POST',
           headers: {
@@ -55,6 +61,8 @@ export default function Dashboard() {
           name: server.name,
           id: server.id,
         })));
+
+        localStorage.setItem('cachedServers', JSON.stringify(data));
       } catch (error) {
         setError(error instanceof Error ? error.message : 'Failed to fetch servers');
       }
