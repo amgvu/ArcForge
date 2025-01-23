@@ -94,6 +94,8 @@ export default function Dashboard() {
     }
   }, [selectedServer]);
 
+  //Checkpoint
+
   const updateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
     try {
       setIsUpdating(userId);
