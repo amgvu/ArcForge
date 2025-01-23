@@ -1,25 +1,24 @@
 "use client";
 
 import { useSession, signIn } from "next-auth/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList } from "@/components";
-import { Server } from "@/types/servers";
+import { useServers, useMembers, Member } from "@/lib/hooks";
+import { updateNickname, saveNicknames, Nickname } from "@/lib/utils";
 
 const arcs = ['League of Legends Arc', 'Marvel Arc'];
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
+  const { servers, error: serversError } = useServers();
   const [selectedServer, setSelectedServer] = useState('');
   const [selectedArc, setSelectedArc] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [members, setMembers] = useState<
-    { user_id: string; username: string; nickname: string; tag: string; avatar_url: string; }[]
-  >([]);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
-  const [servers, setServers] = useState<Server[]>([]);
   const [selectedServerName, setSelectedServerName] = useState<string>('');
+  const { members: fetchedMembers, error: membersError } = useMembers(selectedServer);
+  const [members, setMembers] = useState<Member[]>([]); 
 
   useEffect(() => {
     setIsLoaded(true);
@@ -31,182 +30,54 @@ export default function Dashboard() {
     }
   }, [status]);
 
-  const fetchSameServers = useCallback(async () => {
-    if (session?.accessToken && session.user?.id) {
-      try {
-        const cachedServers = localStorage.getItem('cachedServers');
-        if (cachedServers) {
-          setServers(JSON.parse(cachedServers));
-          return;
-        }
-
-        const response = await fetch('http://localhost:3000/api/servers', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            accessToken: session.accessToken,
-            userId: session.user.id,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`Failed to fetch servers: ${errorData.error || response.statusText}`);
-        }
-
-        const data = await response.json();
-        setServers(data.map((server: Server) => ({
-          name: server.name,
-          id: server.id,
-        })));
-
-        localStorage.setItem('cachedServers', JSON.stringify(data));
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'Failed to fetch servers');
-      }
-    }
-  }, [session]);
-
   useEffect(() => {
-    if (status === 'authenticated') {
-      fetchSameServers();
+    if (fetchedMembers) {
+      setMembers(fetchedMembers);
     }
-  }, [status, fetchSameServers, session?.accessToken, session?.user?.id]);
+  }, [fetchedMembers]);
 
-  const fetchMembers = async (guildId: string) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/members/${guildId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch members');
-      }
-      const data = await response.json();
-      setMembers(data);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to fetch members');
-    }
-  };
-
-  useEffect(() => {
-    if (selectedServer) {
-      fetchMembers(selectedServer);
-    }
-  }, [selectedServer]);
-
-  //Checkpoint
-
-  const updateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
+  const handleUpdateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
     try {
       setIsUpdating(userId);
-      setError(null);
-
-      const response = await fetch('http://localhost:3000/api/changeNickname', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          guild_id: selectedServer,
-          user_id: userId,
-          nickname,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 403 && errorData.code === 50013) {
-          throw new Error('Cannot change nickname of server owner or users with higher roles');
-        }
-        throw new Error(errorData.message || 'Failed to update nickname');
-      }
+      await updateNickname(selectedServer, userId, nickname);
 
       if (saveToDb) {
-        const member = members.find((m) => m.user_id === userId);
+        const member = members.find((m: Member) => m.user_id === userId);
         if (member) {
-          const saveResponse = await fetch('http://localhost:3000/api/save-nicknames', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
+          await saveNicknames(selectedServer, [
+            {
+              userId: member.user_id,
+              nickname: member.nickname,
+              userTag: member.tag,
             },
-            body: JSON.stringify({
-              guildId: selectedServer,
-              nicknames: [
-                {
-                  userId: member.user_id,
-                  nickname: member.nickname,
-                  userTag: member.tag,
-                },
-              ],
-            }),
-          });
-
-          if (!saveResponse.ok) {
-            const errorData = await saveResponse.json();
-            throw new Error(errorData.error || 'Failed to save nickname');
-          }
-
-          console.log('Nickname saved successfully:', member.nickname);
+          ]);
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error(err);
     } finally {
       setIsUpdating(null);
     }
   };
 
-  const saveAllNicknames = async () => {
-    try {
-      const nicknamesToSave = members.map((member) => {
-        const userTag = member.username;
-        return {
-          userId: member.user_id,
-          nickname: member.nickname,
-          userTag: userTag,
-        };
-      });
-
-      console.log('Nicknames to save:', nicknamesToSave);
-
-      const saveResponse = await fetch('http://localhost:3000/api/save-nicknames', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          guildId: selectedServer,
-          nicknames: nicknamesToSave,
-        }),
-      });
-
-      if (!saveResponse.ok) {
-        const errorData = await saveResponse.json();
-        throw new Error(errorData.error || 'Failed to save nicknames');
-      }
-
-      console.log('All nicknames saved successfully:', nicknamesToSave);
-    } catch (error) {
-      throw error;
-    }
-  };
-
   const applyAllNicknames = async () => {
     setIsApplyingAll(true);
-    setError('');
-
     try {
-      await saveAllNicknames();
+      const nicknamesToSave: Nickname[] = members.map((member: Member) => ({
+        userId: member.user_id,
+        nickname: member.nickname,
+        userTag: member.username,
+      }));
 
-      const updatePromises = members.map((member) =>
-        updateNickname(member.user_id, member.nickname, false)
+      await saveNicknames(selectedServer, nicknamesToSave);
+
+      const updatePromises = members.map((member: Member) =>
+        handleUpdateNickname(member.user_id, member.nickname, false)
       );
 
       await Promise.all(updatePromises);
-
-      console.log('All nicknames updated successfully');
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to apply all nicknames');
+      console.error(error);
     } finally {
       setIsApplyingAll(false);
     }
@@ -234,10 +105,10 @@ export default function Dashboard() {
           <div className="rounded-lg bg-[#121214] shadow-md p-6">
             <label className="block text-sm font-medium mb-1">Select Server</label>
             <DSMenu
-              items={servers.map(server => server.name)}
+              items={servers.map((server: { name: string }) => server.name)}
               selectedItem={selectedServerName}
-              setSelectedItem={(value) => {
-                const selected = servers.find(server => server.name === value);
+              setSelectedItem={(value: string) => {
+                const selected = servers.find((server: { name: string; id: string }) => server.name === value);
                 if (selected) {
                   setSelectedServerName(selected.name);
                   setSelectedServer(selected.id);
@@ -259,23 +130,23 @@ export default function Dashboard() {
           </div>
 
           <div className="rounded-lg bg-[#121214] shadow-md p-6">
-            {error && (
+            {(serversError || membersError) && (
               <div className="mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
-                {error}
+                {serversError || membersError}
               </div>
             )}
             <DSUserList
               members={members}
               isUpdating={isUpdating}
               onNicknameChange={handleNicknameChange}
-              onApplyNickname={(userId, nickname) => updateNickname(userId, nickname, true)}
+              onApplyNickname={(userId: string, nickname: string) => handleUpdateNickname(userId, nickname, true)}
             />
           </div>
         </div>
         <div className="flex justify-end mt-4 space-x-4">
           <DSButton
             onClick={applyAllNicknames}
-            disabled={isApplyingAll || members.some(m => !m.nickname)}
+            disabled={isApplyingAll || members.some((m: Member) => !m.nickname)}
           >
             {isApplyingAll ? 'Applying...' : 'Apply Arc'}
           </DSButton>
