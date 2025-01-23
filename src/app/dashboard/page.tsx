@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [members, setMembers] = useState<
-    { user_id: string; username: string; nickname: string; tag: string; avatar_url: string }[]
+    { user_id: string; username: string; nickname: string; tag: string; avatar_url: string; discriminator: string; }[]
   >([]);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
   const [servers, setServers] = useState<Server[]>([]);
@@ -157,16 +157,17 @@ export default function Dashboard() {
     setError('');
   
     try {
-      const updatePromises = members.map((member) =>
-        updateNickname(member.user_id, member.nickname)
-      );
-      await Promise.all(updatePromises);
+      const nicknamesToSave = members.map((member) => {
+        const discriminator = member.discriminator === '0' ? '0000' : member.discriminator;
+        const userTag = member.tag || `${member.username}#${discriminator}`;
+        return {
+          userId: member.user_id,
+          nickname: member.nickname,
+          userTag: userTag,
+        };
+      });
   
-      const nicknamesToSave = members.map((member) => ({
-        userId: member.user_id,
-        nickname: member.nickname,
-        userTag: member.tag,
-      }));
+      console.log('Nicknames to save:', nicknamesToSave);
   
       const saveResponse = await fetch('http://localhost:3000/api/save-nicknames', {
         method: 'POST',
