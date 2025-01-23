@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList } from "@/components";
 import { useServers, useMembers, Member } from "@/lib/hooks";
 import { updateNickname, saveNicknames, Nickname } from "@/lib/utils";
+import { ArcNickname } from "@/types/types";
+import { createArc, saveArcNicknames } from "@/lib/utils/api";
 
 const arcs = ['League of Legends Arc', 'Marvel Arc'];
 
@@ -16,9 +18,10 @@ export default function Dashboard() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
+  const [isSavingArc, setIsSavingArc] = useState(false);
   const [selectedServerName, setSelectedServerName] = useState<string>('');
   const { members: fetchedMembers, error: membersError } = useMembers(selectedServer);
-  const [members, setMembers] = useState<Member[]>([]); 
+  const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -89,6 +92,35 @@ export default function Dashboard() {
     setMembers(updatedMembers);
   };
 
+  const handleSaveArc = async () => {
+    if (!selectedServer || !selectedArc || members.length === 0) {
+      alert('Please select a server, arc, and ensure members are loaded.');
+      return;
+    }
+
+    setIsSavingArc(true);
+
+    try {
+      const arc = await createArc(selectedServer, selectedArc);
+
+      const arcNicknames: ArcNickname[] = members.map((member) => ({
+        arc_id: arc.id!,
+        user_id: member.user_id,
+        nickname: member.nickname,
+        userTag: member.username,
+      }));
+
+      await saveArcNicknames(arcNicknames);
+
+      alert('Arc saved successfully!');
+    } catch (error) {
+      console.error(error);
+      alert('Failed to save arc. Please try again.');
+    } finally {
+      setIsSavingArc(false);
+    }
+  };
+
   if (status === 'loading') {
     return <div>Loading...</div>;
   }
@@ -150,7 +182,14 @@ export default function Dashboard() {
           >
             {isApplyingAll ? 'Applying...' : 'Apply Arc'}
           </DSButton>
-          <DSButton>Save Arc</DSButton>
+          <div className="">
+          <DSButton
+            onClick={handleSaveArc}
+            disabled={isSavingArc || !selectedServer || !selectedArc || members.length === 0}
+          >
+            {isSavingArc ? 'Saving...' : 'Save Arc'}
+          </DSButton>
+        </div>
         </div>
       </div>
     </div>

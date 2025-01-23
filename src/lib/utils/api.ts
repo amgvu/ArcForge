@@ -1,4 +1,5 @@
-import { Server } from "@/types/types";
+import { Server, Arc, ArcNickname } from "@/types/types";
+import { supabase } from "../supabase";
 
 export type Nickname = {
   userId: string;
@@ -76,4 +77,28 @@ export const saveNicknames = async (guildId: string, nicknames: Nickname[]) => {
   }
 
   return response.json();
+};
+
+export const createArc = async (guildId: string, arcName: string): Promise<Arc> => {
+  const { data, error } = await supabase
+    .from('arcs')
+    .insert([{ guild_id: guildId, arc_name: arcName }])
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const saveArcNicknames = async (arcNicknames: ArcNickname[]): Promise<void> => {
+  const { error } = await supabase
+    .from('arc_nicknames')
+    .insert(arcNicknames);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };

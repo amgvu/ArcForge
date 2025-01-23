@@ -21,5 +21,11 @@ export interface ArcNickname {
   arc_id: number;
   user_id: string;
   nickname: string;
-  user_tag: string;
+  userTag: string;
+}
+
+export interface Nickname {
+  userId: string;
+  nickname: string;
+  userTag: string;
 }
