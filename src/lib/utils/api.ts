@@ -102,3 +102,18 @@ export const saveArcNicknames = async (arcNicknames: ArcNickname[]): Promise<voi
     throw new Error(error.message);
   }
 };
+
+export const checkExistingArc = async (guildId: string, arcName: string): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from('arcs')
+    .select('id')
+    .eq('guild_id', guildId)
+    .eq('arc_name', arcName)
+    .single();
+
+  if (error && error.code !== 'PGRST116') {
+    throw new Error(error.message);
+  }
+
+  return !!data;
+};

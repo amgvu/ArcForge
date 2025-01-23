@@ -6,7 +6,7 @@ import { DSButton, DSMenu, DSUserList } from "@/components";
 import { useServers, useMembers, Member } from "@/lib/hooks";
 import { updateNickname, saveNicknames, Nickname } from "@/lib/utils";
 import { ArcNickname } from "@/types/types";
-import { createArc, saveArcNicknames } from "@/lib/utils/api";
+import { createArc, saveArcNicknames, checkExistingArc } from "@/lib/utils/api";
 
 const arcs = ['League of Legends Arc', 'Marvel Arc'];
 
@@ -97,21 +97,34 @@ export default function Dashboard() {
       alert('Please select a server, arc, and ensure members are loaded.');
       return;
     }
-
+  
     setIsSavingArc(true);
-
+  
     try {
+      const arcExists = await checkExistingArc(selectedServer, selectedArc);
+  
+      if (arcExists) {
+        alert('An arc with this name already exists for the selected server. Please choose a different name.');
+        return;
+      }
+  
       const arc = await createArc(selectedServer, selectedArc);
-
-      const arcNicknames: ArcNickname[] = members.map((member) => ({
-        arc_id: arc.id!,
-        user_id: member.user_id,
-        nickname: member.nickname,
-        userTag: member.username,
-      }));
-
+  
+      const arcNicknames: ArcNickname[] = members.map((member) => {
+        if (!member.tag && !member.username) {
+          throw new Error(`User tag and username are missing for user ${member.user_id}`);
+        }
+  
+        return {
+          arc_id: arc.id!,
+          user_id: member.user_id,
+          nickname: member.nickname,
+          userTag: member.tag || member.username,
+        };
+      });
+  
       await saveArcNicknames(arcNicknames);
-
+  
       alert('Arc saved successfully!');
     } catch (error) {
       console.error(error);
