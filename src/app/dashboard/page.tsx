@@ -2,19 +2,17 @@
 
 import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { DSButton, DSMenu, DSUserList } from "@/components";
+import { DSButton, DSMenu, DSUserList, DSCreateMenu } from "@/components";
 import { useServers, useMembers, Member } from "@/lib/hooks";
 import { updateNickname, saveNicknames, Nickname } from "@/lib/utils";
-import { ArcNickname } from "@/types/types";
-import { createArc, saveArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utils/api";
-
-const arcs = ['League of Legends Arc', 'Marvel Arc'];
+import { ArcNickname, Arc } from "@/types/types";
+import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utils/api";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const { servers, error: serversError } = useServers();
   const [selectedServer, setSelectedServer] = useState('');
-  const [selectedArc, setSelectedArc] = useState('');
+  const [selectedArc, setSelectedArc] = useState<Arc | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
@@ -38,6 +36,30 @@ export default function Dashboard() {
       setMembers(fetchedMembers);
     }
   }, [fetchedMembers]);
+
+  useEffect(() => {
+    const loadArcNicknames = async () => {
+      if (selectedArc) {
+        try {
+          const arcNicknames = await fetchArcNicknames(selectedArc.id);
+  
+          setMembers((currentMembers) =>
+            currentMembers.map((member) => {
+              const arcNickname = arcNicknames.find((an) => an.user_id === member.user_id);
+              return arcNickname
+                ? { ...member, nickname: arcNickname.nickname }
+                : member;
+            })
+          );
+        } catch (error) {
+          console.error('Failed to fetch arc nicknames:', error);
+        }
+      }
+    };
+  
+    loadArcNicknames();
+  }, [selectedArc]);
+            
 
   const handleUpdateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
     try {
@@ -97,31 +119,31 @@ export default function Dashboard() {
       alert('Please select a server, arc, and ensure members are loaded.');
       return;
     }
-  
+
     setIsSavingArc(true);
-  
+
     try {
-      const existingArc = await checkExistingArc(selectedServer, selectedArc);
-  
+      const existingArc = await checkExistingArc(selectedServer, selectedArc.name);
+
       if (existingArc) {
         const confirmOverwrite = window.confirm(
           'An arc with this name already exists. Do you want to overwrite it with the new set of nicknames?'
         );
-  
+
         if (!confirmOverwrite) {
           return;
         }
-  
+
         await deleteArcNicknames(existingArc.id);
       }
-  
-      const arc = existingArc || (await createArc(selectedServer, selectedArc));
-  
+
+      const arc = existingArc || (await createArc(selectedServer, selectedArc.name));
+
       const newNicknames: ArcNickname[] = members.map((member) => {
         if (!member.tag && !member.username) {
           throw new Error(`User tag and username are missing for user ${member.user_id}`);
         }
-  
+
         return {
           arc_id: arc.id!,
           guild_id: selectedServer,
@@ -130,15 +152,26 @@ export default function Dashboard() {
           userTag: member.tag || member.username,
         };
       });
-  
+
       await saveArcNicknames(newNicknames);
-  
+
       alert('Arc saved successfully!');
     } catch (error) {
       console.error(error);
       alert('Failed to save arc. Please try again.');
     } finally {
       setIsSavingArc(false);
+    }
+  };
+
+  const handleCreateNewArc = async (newArcName: string) => {
+    try {
+      const newArc = await createArc(selectedServer, newArcName);
+
+      setSelectedArc(newArc);
+    } catch (error) {
+      console.error('Failed to create new arc:', error);
+      alert('Failed to create new arc. Please try again.');
     }
   };
 
@@ -175,10 +208,11 @@ export default function Dashboard() {
 
           <div className="rounded-lg bg-[#121214] shadow-md p-6">
             <label className="block text-sm font-medium mb-1">Select Arc</label>
-            <DSMenu
-              items={arcs}
-              selectedItem={selectedArc}
-              setSelectedItem={setSelectedArc}
+            <DSCreateMenu
+              selectedServer={selectedServer}
+              selectedArc={selectedArc}
+              setSelectedArc={setSelectedArc}
+              onCreateNewArc={handleCreateNewArc}
             />
           </div>
 
@@ -204,13 +238,13 @@ export default function Dashboard() {
             {isApplyingAll ? 'Applying...' : 'Apply Arc'}
           </DSButton>
           <div className="">
-          <DSButton
-            onClick={handleSaveArc}
-            disabled={isSavingArc || !selectedServer || !selectedArc || members.length === 0}
-          >
-            {isSavingArc ? 'Saving...' : 'Save Arc'}
-          </DSButton>
-        </div>
+            <DSButton
+              onClick={handleSaveArc}
+              disabled={isSavingArc || !selectedServer || !selectedArc || members.length === 0}
+            >
+              {isSavingArc ? 'Saving...' : 'Save Arc'}
+            </DSButton>
+          </div>
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ export interface Arc {
   id: number;
   name: string;
   guild_id: string;
+  arc_name: string;
 }
 
 export interface ArcNickname {

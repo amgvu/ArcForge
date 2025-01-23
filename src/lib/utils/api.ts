@@ -93,6 +93,19 @@ export const createArc = async (guildId: string, arcName: string): Promise<Arc> 
   return data;
 };
 
+export const fetchArcs = async (guild_id: string): Promise<Arc[]> => {
+  const { data, error } = await supabase
+    .from('arcs')
+    .select('*')
+    .eq('guild_id', guild_id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
 export const saveArcNicknames = async (arcNicknames: ArcNickname[]): Promise<void> => {
   const { error } = await supabase
     .from('arc_nicknames')
