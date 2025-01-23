@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useSession, signIn } from 'next-auth/react';
-import { useState, useEffect, useCallback } from 'react';
-import { DSButton, DSMenu, DSUserList } from '@/components';
-import { Server } from '@/types/servers';
+import { useSession, signIn } from "next-auth/react";
+import { useState, useEffect, useCallback } from "react";
+import { DSButton, DSMenu, DSUserList } from "@/components";
+import { Server } from "@/types/servers";
 
 const arcs = ['League of Legends Arc', 'Marvel Arc'];
 
@@ -158,8 +158,7 @@ export default function Dashboard() {
   
     try {
       const nicknamesToSave = members.map((member) => {
-        const discriminator = member.discriminator === '0' ? '0000' : member.discriminator;
-        const userTag = member.tag || `${member.username}#${discriminator}`;
+        const userTag = member.username;
         return {
           userId: member.user_id,
           nickname: member.nickname,
