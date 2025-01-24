@@ -35,6 +35,8 @@ export const fetchMembers = async (guildId: string) => {
   return response.json();
 };
 
+//CRUD OPERATIONS FOR NICKNAMES
+
 export const updateNickname = async (guildId: string, userId: string, nickname: string) => {
   const response = await fetch('http://localhost:3000/api/changeNickname', {
     method: 'POST',
@@ -78,6 +80,8 @@ export const saveNicknames = async (guildId: string, nicknames: Nickname[]) => {
 
   return response.json();
 };
+
+//CRUD OPERATIONS FOR ARCS
 
 export const createArc = async (guildId: string, arcName: string): Promise<Arc> => {
   const { data, error } = await supabase
