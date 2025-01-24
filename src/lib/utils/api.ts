@@ -93,6 +93,17 @@ export const createArc = async (guildId: string, arcName: string): Promise<Arc> 
   return data;
 };
 
+export const deleteArc = async (arcId: number): Promise<void> => {
+  const { error } = await supabase
+    .from('arcs')
+    .delete()
+    .eq('id', arcId);
+
+  if (error) {
+    throw new Error(`Failed to delete arc: ${error.message}`);
+  }
+};
+
 export const fetchArcs = async (guild_id: string): Promise<Arc[]> => {
   const { data, error } = await supabase
     .from('arcs')

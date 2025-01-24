@@ -1,8 +1,8 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Combobox, Transition } from '@headlessui/react';
-import { ChevronDownIcon, PlusIcon } from '@heroicons/react/20/solid';
+import { ChevronDownIcon, PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Arc } from '@/types/types';
-import { fetchArcs } from '@/lib/utils/api';
+import { fetchArcs, deleteArc } from '@/lib/utils/api';
 
 interface DSCreateMenuProps {
   selectedServer: string;
@@ -37,6 +37,25 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
       console.error('Failed to fetch arcs:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteArc = async (arcId: number) => {
+    if (!window.confirm('Are you sure you want to delete this arc? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await deleteArc(arcId);
+      const updatedArcs = await fetchArcs(selectedServer);
+      setArcs(updatedArcs);
+      
+      if (selectedArc?.id === arcId) {
+        setSelectedArc(null);
+      }
+    } catch (error) {
+      console.error('Failed to delete arc:', error);
+      alert('Failed to delete arc. Please try again.');
     }
   };
 
@@ -103,9 +122,23 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
                   `}
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                      {arc.arc_name}
-                    </span>
+                    <div className="flex justify-between items-center w-full">
+                      <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                        {arc.arc_name}
+                      </span>
+                      <button
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteArc(arc.id);
+                        }}
+                        className="hover:text-red-400 ml-2"
+                      >
+                        <TrashIcon className="h-4 w-4 text-red-500 hover:text-red-400" />
+                      </button>
+                    </div>
                   )}
                 </Combobox.Option>
               ))}
