@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Combobox, Transition } from '@headlessui/react';
 import { ChevronDownIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { Arc } from '@/types/types';
@@ -19,6 +19,12 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
   const [query, setQuery] = useState('');
   const [arcs, setArcs] = useState<Arc[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setSelectedArc(null);
+    setQuery('');
+    setArcs([]);
+  }, [selectedServer, setSelectedArc]);
 
   const handleOpen = async () => {
     if (!selectedServer) return;
