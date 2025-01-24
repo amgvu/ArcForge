@@ -184,14 +184,15 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-[#0A0A0B] p-4">
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-zinc-950 p-4">
       <div className={`max-w-4xl w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <h1 className="text-2xl font-semibold mb-4">ArcForge</h1>
-        <div className="rounded-lg bg-zinc-900 space-y-5 shadow-md p-8">
-          <div className="rounded-lg bg-[#121214] shadow-md p-6">
+        <div className="rounded-md bg-zinc-900/80 space-y-5 shadow-md p-4">
+          <div className="rounded-md bg-zinc-950 shadow-md p-6">
             <label className="block text-sm font-medium mb-1">Select Server</label>
             <DSMenu
               items={servers.map((server: { name: string }) => server.name)}
+              placeholder='Select a server'
               selectedItem={selectedServerName}
               setSelectedItem={(value: string) => {
                 const selected = servers.find((server: { name: string; id: string }) => server.name === value);
@@ -206,7 +207,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="rounded-lg bg-[#121214] shadow-md p-6">
+          <div className="rounded-md bg-zinc-950 shadow-md p-6">
             <label className="block text-sm font-medium mb-1">Select Arc</label>
             <DSCreateMenu
               selectedServer={selectedServer}
@@ -216,7 +217,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="rounded-lg bg-[#121214] shadow-md p-6">
+          <div className="rounded-md bg-zinc-950 shadow-md p-6">
             {(serversError || membersError) && (
               <div className="mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
                 {serversError || membersError}

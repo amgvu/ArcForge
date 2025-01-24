@@ -8,7 +8,7 @@ export default function DashboardLayout({
     children: React.ReactNode;
   }) {
     return (
-      <div className="min-h-screen bg-[#0A0A0B]">
+      <div className="min-h-screen bg-zinc-950">
         <SessionProvider>
         <main className="p-6">{children}</main>
         </SessionProvider>

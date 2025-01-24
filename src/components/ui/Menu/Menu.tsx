@@ -7,16 +7,24 @@ interface DSMenuProps {
   items: string[];
   selectedItem: string;
   setSelectedItem: (item: string) => void;
+  placeholder?: string;
 }
 
-const DSMenu: React.FC<DSMenuProps> = ({ items, selectedItem, setSelectedItem }) => {
-  const title = selectedItem ? selectedItem : '';
+const DSMenu: React.FC<DSMenuProps> = ({ 
+  items, 
+  selectedItem, 
+  setSelectedItem, 
+  placeholder,
+}) => {
+  const title = selectedItem || placeholder;
 
   return (
     <Menu as="div" className="relative m-2 w-full">
       <Menu.Button className={menuButtonStyles}>
-        {title}
-        <ChevronDownIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
+        <span className={!selectedItem ? 'text-zinc-400' : ''}>
+          {title}
+        </span>
+        <ChevronDownIcon className="h-5 w-5 text-blue-500" aria-hidden="true" />
       </Menu.Button>
       <Transition
         as={Fragment}

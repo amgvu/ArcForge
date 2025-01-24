@@ -68,7 +68,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
           placeholder="Select or create an arc"
         />
         <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-          <ChevronDownIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
+          <ChevronDownIcon className="h-5 w-5 text-blue-500" aria-hidden="true" />
         </Combobox.Button>
       </div>
       <Transition
