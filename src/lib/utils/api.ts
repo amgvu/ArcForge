@@ -138,6 +138,18 @@ export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Pro
   };
 };
 
+export const deleteNickname = async (guildId: string, userId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('nicknames')
+    .delete()
+    .eq('guild_id', guildId)
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(`Failed to delete nickname: ${error.message}`);
+  }
+};
+
 ///////////////////////CRUD OPERATIONS FOR ARCS///////////////////////
 
 export const createArc = async (guildId: string, arcName: string): Promise<Arc> => {
