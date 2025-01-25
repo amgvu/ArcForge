@@ -61,24 +61,82 @@ export const updateNickname = async (guildId: string, userId: string, nickname: 
   return response.json();
 };
 
-export const saveNicknames = async (guildId: string, nicknames: Nickname[]) => {
-  const response = await fetch('http://localhost:3000/api/save-nicknames', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      guildId,
-      nicknames,
-    }),
-  });
+export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Promise<{
+  message: string;
+  savedNicknames: Array<{
+    guild_id: string;
+    user_id: string;
+    user_tag: string;
+    nickname: string;
+    updated_at: string;
+    is_active: boolean;
+  }>;
+}> => {
+  const validNicknames: {
+    guild_id: string;
+    user_id: string;
+    user_tag: string;
+    nickname: string;
+    updated_at: string;
+    is_active: boolean;
+  }[] = nicknames.map(n => ({
+    guild_id: guildId,
+    user_id: n.userId,
+    user_tag: n.userTag || '',
+    nickname: n.nickname,
+    updated_at: new Date().toISOString(),
+    is_active: true
+  }));
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || 'Failed to save nicknames');
+  const upsertResults = await Promise.all(validNicknames.map(async (nickname) => {
+    const { data: existingNicknames, error: fetchError } = await supabase
+      .from("nicknames")
+      .select("*")
+      .eq("guild_id", nickname.guild_id)
+      .eq("user_id", nickname.user_id)
+      .eq("nickname", nickname.nickname)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error("Error checking existing nickname:", fetchError);
+      return null;
+    }
+
+    if (existingNicknames) {
+      return existingNicknames;
+    }
+
+    await supabase
+      .from("nicknames")
+      .update({ is_active: false })
+      .eq("guild_id", nickname.guild_id)
+      .eq("user_id", nickname.user_id)
+      .eq("is_active", true);
+
+    const { data, error } = await supabase
+      .from("nicknames")
+      .insert(nickname)
+      .select();
+
+    if (error) {
+      console.error("Error saving nickname:", error);
+      return null;
+    }
+
+    return data[0];
+  }));
+
+  const savedNicknames = upsertResults.filter(result => result !== null);
+
+  if (savedNicknames.length === 0) {
+    throw new Error("Failed to save any nicknames.");
   }
 
-  return response.json();
+  return { 
+    message: "Nicknames processed successfully.", 
+    savedNicknames: savedNicknames 
+  };
 };
 
 //CRUD OPERATIONS FOR ARCS
