@@ -35,7 +35,7 @@ export const fetchMembers = async (guildId: string) => {
   return response.json();
 };
 
-//CRUD OPERATIONS FOR NICKNAMES
+///////////////////////CRUD OPERATIONS FOR NICKNAMES///////////////////////
 
 export const updateNickname = async (guildId: string, userId: string, nickname: string) => {
   const response = await fetch('http://localhost:3000/api/changeNickname', {
@@ -95,7 +95,6 @@ export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Pro
       .eq("guild_id", nickname.guild_id)
       .eq("user_id", nickname.user_id)
       .eq("nickname", nickname.nickname)
-      .eq("is_active", true)
       .maybeSingle();
 
     if (fetchError) {
@@ -139,7 +138,7 @@ export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Pro
   };
 };
 
-//CRUD OPERATIONS FOR ARCS
+///////////////////////CRUD OPERATIONS FOR ARCS///////////////////////
 
 export const createArc = async (guildId: string, arcName: string): Promise<Arc> => {
   const { data, error } = await supabase
