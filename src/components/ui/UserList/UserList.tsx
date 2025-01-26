@@ -1,13 +1,6 @@
 import { UserListCard } from '../UserListCard/UserListCard'; 
 import { styles } from './UserList.styles';
-
-interface Member {
-  user_id: string;
-  username: string;
-  nickname: string;
-  tag: string;
-  avatar_url: string;
-}
+import { Member } from '@/types/types';
 
 interface UserListProps {
   members: Member[];

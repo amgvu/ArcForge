@@ -1,15 +1,11 @@
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { DSInput, DSButton } from '@/components/';
 import { styles } from './UserListCard.styles';
+import { Member } from '@/types/types';
 
 interface UserListCardProps {
-  member: {
-    user_id: string;
-    username: string;
-    nickname: string;
-    tag: string;
-    avatar_url: string;
-  };
+  member: Member;
   isUpdating: boolean;
   onNicknameChange: (nickname: string) => void;
   onApplyNickname: () => void;
@@ -21,6 +17,20 @@ export const UserListCard: React.FC<UserListCardProps> = ({
   onNicknameChange,
   onApplyNickname,
 }) => {
+  const [inputValue, setInputValue] = useState(member.nickname || member.globalName || '');
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  useEffect(() => {
+    if (!isInputFocused) {
+      setInputValue(member.nickname || member.globalName || '');
+    }
+  }, [member.nickname, member.globalName, isInputFocused]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    onNicknameChange(e.target.value);
+  };
+
   return (
     <div className={styles.card}>
       <div className="flex items-center space-x-4">
@@ -36,8 +46,10 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         />
         <div className={styles.memberDetails}>
           <DSInput
-            value={member.nickname}
-            onChange={(e) => onNicknameChange(e.target.value)}
+            value={inputValue}
+            onChange={handleInputChange}
+            onFocus={() => setIsInputFocused(true)}
+            onBlur={() => setIsInputFocused(false)}
             placeholder={`Nickname for ${member.username}`}
             className={styles.nicknameInput}
             disabled={isUpdating}
@@ -49,7 +61,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         
         <DSButton
           onClick={onApplyNickname}
-          disabled={isUpdating || !member.nickname}
+          disabled={isUpdating || !inputValue}
           className={styles.applyButton}
         >
           {isUpdating ? 'Applying...' : 'Apply'}

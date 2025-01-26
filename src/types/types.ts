@@ -7,6 +7,7 @@ export interface Member {
   user_id: string;
   username: string;
   nickname: string;
+  globalName: string;
   tag: string;
   avatar_url: string;
 }
