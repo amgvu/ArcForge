@@ -3,9 +3,9 @@
 import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList, DSCreateMenu } from "@/components";
-import { useServers, useMembers, Member } from "@/lib/hooks";
-import { updateNickname, saveNicknames, Nickname } from "@/lib/utils";
-import { ArcNickname, Arc } from "@/types/types";
+import { useServers, useMembers } from "@/lib/hooks";
+import { updateNickname, saveNicknames } from "@/lib/utils";
+import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
 import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utils/api";
 
 export default function Dashboard() {
@@ -64,6 +64,7 @@ export default function Dashboard() {
   const handleUpdateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
     try {
       setIsUpdating(userId);
+      
       await updateNickname(selectedServer, userId, nickname);
 
       if (saveToDb) {
@@ -73,7 +74,7 @@ export default function Dashboard() {
             {
               userId: member.user_id,
               nickname: member.nickname,
-              userTag: member.tag,
+              userTag: member.username
             },
           ]);
         }
@@ -140,7 +141,7 @@ export default function Dashboard() {
       const arc = existingArc || (await createArc(selectedServer, selectedArc.arc_name));
   
       const newNicknames: ArcNickname[] = members.map((member) => {
-        if (!member.tag && !member.username) {
+        if (!member.userTag && !member.username) {
           throw new Error(`User tag and username are missing for user ${member.user_id}`);
         }
   
@@ -149,7 +150,7 @@ export default function Dashboard() {
           guild_id: selectedServer,
           user_id: member.user_id,
           nickname: member.nickname,
-          userTag: member.tag || member.username,
+          userTag: member.userTag || member.username,
         };
       });
   

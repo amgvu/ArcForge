@@ -61,7 +61,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
             disabled={isUpdating}
           />
           <div className={styles.username}>
-            {member.username}{member.tag}
+            {member.username}{member.userTag}
           </div>
         </div>
         
