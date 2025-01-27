@@ -1,11 +1,5 @@
-import { Server, Arc, ArcNickname } from "@/types/types";
+import { Server, Arc, ArcNickname, Nickname } from "@/types/types";
 import { supabase } from "../supabase";
-
-export type Nickname = {
-  userId: string;
-  nickname: string;
-  userTag: string;
-};
 
 export const fetchServers = async (accessToken: string, userId: string): Promise<Server[]> => {
   const response = await fetch('http://localhost:3000/api/servers', {

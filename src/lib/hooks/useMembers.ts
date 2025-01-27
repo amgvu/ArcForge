@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchMembers } from "../utils/api";
-
-export type Member = {
-  user_id: string;
-  username: string;
-  nickname: string;
-  tag: string;
-  avatar_url: string;
-};
+import { Member } from "@/types/types";
 
 export const useMembers = (guildId: string) => {
   const [members, setMembers] = useState<Member[]>([]);
