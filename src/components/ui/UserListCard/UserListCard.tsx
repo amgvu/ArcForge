@@ -31,6 +31,12 @@ export const UserListCard: React.FC<UserListCardProps> = ({
     onNicknameChange(e.target.value);
   };
 
+  const handleRevert = () => {
+    const globalName = member.globalName || '';
+    setInputValue(globalName);
+    onNicknameChange(globalName);
+  };
+
   return (
     <div className={styles.card}>
       <div className="flex items-center space-x-4">
@@ -66,6 +72,13 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         >
           {isUpdating ? 'Applying...' : 'Apply'}
         </DSButton>
+        <DSButton
+            onClick={handleRevert}
+            disabled={isUpdating}
+            className={styles.applyButton}
+          >
+            Revert
+          </DSButton>
       </div>
     </div>
   );
