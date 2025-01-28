@@ -77,7 +77,7 @@ export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Pro
     guild_id: guildId,
     user_id: n.userId,
     user_tag: n.userTag || '',
-    nickname: n.nickname,
+    nickname: n.nickname.trim(),
     updated_at: new Date().toISOString(),
     is_active: true
   }));
