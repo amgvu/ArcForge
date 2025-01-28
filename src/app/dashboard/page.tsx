@@ -186,10 +186,10 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-zinc-950 p-4">
-      <div className={`max-w-4xl w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-        <h1 className="text-2xl font-semibold mb-4">ArcForge</h1>
-        <div className="rounded-md bg-zinc-900/80 space-y-5 shadow-md p-4">
-          <div className="rounded-md bg-zinc-950 shadow-md p-6">
+      <div className={`max-w-7xl w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        <h1 className="text-2xl font-semibold font-[family-name:var(--font-geist-mono)] mb-4">Project Arcs</h1>
+        <div className=" space-y-5 shadow-md p-4">
+          <div className="rounded-md shadow-md p-6">
             <label className="block text-sm font-medium mb-1">Select Server</label>
             <DSMenu
               items={servers.map((server: { name: string }) => server.name)}

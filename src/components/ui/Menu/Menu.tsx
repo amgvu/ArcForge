@@ -19,7 +19,7 @@ const DSMenu: React.FC<DSMenuProps> = ({
   const title = selectedItem || placeholder;
 
   return (
-    <Menu as="div" className="relative m-2 w-full">
+    <Menu as="div" className="relative w-full">
       <Menu.Button className={menuButtonStyles}>
         <span className={!selectedItem ? 'text-zinc-400' : ''}>
           {title}

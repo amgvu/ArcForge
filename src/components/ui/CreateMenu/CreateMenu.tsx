@@ -83,7 +83,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
           onFocus={handleOpen}
           displayValue={(arc: Arc | null) => arc?.arc_name || ''}
           onChange={(event) => setQuery(event.target.value)}
-          className="w-full p-2 pr-10 bg-zinc-800 border border-zinc-700 rounded-md text-[#D7DADC] focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          className="w-full p-2 pr-10 bg-zinc-800 border border-zinc-700 rounded-lg text-[#D7DADC] focus:outline-none focus:ring-2 focus:ring-zinc-500"
           placeholder="Select or create an arc"
         />
         <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -100,7 +100,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
         leaveTo="transform opacity-0 scale-95"
       >
         <Combobox.Options 
-          className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-md bg-[#121214] py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+          className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg bg-[#121214] py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
         >
           {isLoading ? (
             <div className="relative cursor-default select-none px-4 py-2 text-zinc-400">
@@ -118,7 +118,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
                   value={arc}
                   className={({ active }) => `
                     relative cursor-default select-none py-2 pl-4 pr-4
-                    ${active ? 'bg-zinc-800 text-[#D7DADC]' : 'text-[#D7DADC]'}
+                    ${active ? 'bg-zinc-800 rounded-lg text-[#D7DADC]' : 'text-[#D7DADC]'}
                   `}
                 >
                   {({ selected }) => (
