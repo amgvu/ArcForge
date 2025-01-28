@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { fetchServers } from "@/lib/utils/api";
+import { fetchServers } from "@/lib/utilities/api";
 import { Server } from "@/types/types";
 
 export const useServers = () => {

@@ -2,7 +2,7 @@ import { Fragment, useState, useEffect } from 'react';
 import { Combobox, Transition } from '@headlessui/react';
 import { ChevronDownIcon, PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Arc } from '@/types/types';
-import { fetchArcs, deleteArc } from '@/lib/utils/api';
+import { fetchArcs, deleteArc } from '@/lib/utilities/api';
 
 interface DSCreateMenuProps {
   selectedServer: string;

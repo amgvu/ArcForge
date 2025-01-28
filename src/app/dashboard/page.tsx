@@ -4,9 +4,9 @@ import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList, DSCreateMenu } from "@/components";
 import { useServers, useMembers } from "@/lib/hooks";
-import { updateNickname, saveNicknames } from "@/lib/utils";
+import { updateNickname, saveNicknames } from "@/lib/utilities";
 import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
-import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utils/api";
+import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utilities/api";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
