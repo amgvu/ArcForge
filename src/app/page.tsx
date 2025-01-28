@@ -2,19 +2,19 @@ import { TextEffect } from '@/components/ui/Animations/text-effect';
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] bg-neutral-950 text-white items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-mono)]">
+    <div className="grid grid-rows-[20px_1fr_20px] bg-neutral-950 text-neutral-100 items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-mono)]">
       <main className="flex flex-col gap-8 row-start-2 items-center">
           <h1 className="font-bold text-8xl">
-            <TextEffect>
+            <TextEffect delay={0.5}>
             PROJECT ARCS
             </TextEffect>
             </h1>
 
         <div className="text-center text-2xl space-y-4">
-          <TextEffect delay={1}>
+          <TextEffect delay={2}>
             The next generation of names and roles management in your Discord server, driven by AI.
             </TextEffect>
-            <TextEffect className="font-bold" delay={3.5}>
+            <TextEffect className="font-bold" delay={4.5}>
             It&apos;s fun :)
             </TextEffect>
         </div>

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ArcForge",
-  description: "ArcForge is a tool for managing nicknames",
+  title: "PROJECT ARCS",
+  description: "A tool for managing nicknames",
 };
 
 export default function RootLayout({
