@@ -15,7 +15,7 @@ export default function Home() {
             The next generation of names and roles management in your Discord server, driven by AI.
             </TextEffect>
             <TextEffect className="font-bold" delay={4.5}>
-            It&apos;s fun :)
+            It&apos;s fun.
             </TextEffect>
         </div>
       </main>

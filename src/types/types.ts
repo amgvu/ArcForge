@@ -10,6 +10,13 @@ export interface Member {
   globalName: string;
   userTag: string;
   avatar_url: string;
+  roles: Role[];
+}
+
+export interface Role {
+  id: string;
+  name: string;
+  position: number;
 }
 
 export interface Arc {

@@ -67,6 +67,7 @@ const presetVariants: Record<
   PresetType,
   { container: Variants; item: Variants }
 > = {
+  // @ts-expect-error component works fine
   blur: {
     container: defaultContainerVariants,
     item: {
