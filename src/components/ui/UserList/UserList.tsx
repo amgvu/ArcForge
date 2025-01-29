@@ -80,11 +80,14 @@ export const DSUserList: React.FC<UserListProps> = ({
                 variants={itemVariants}
               >
                 <UserListCard
-                  member={member}
-                  isUpdating={isUpdating === member.user_id}
-                  onNicknameChange={(nickname) => onNicknameChange(memberIndex, nickname)}
-                  onApplyNickname={() => onApplyNickname(member.user_id, member.nickname)}
-                />
+                    member={member}
+                    isUpdating={isUpdating === member.user_id}
+                    onNicknameChange={(nickname) => {
+                      const originalIndex = members.findIndex(m => m.user_id === member.user_id);
+                      onNicknameChange(originalIndex, nickname);
+                    }}
+                    onApplyNickname={() => onApplyNickname(member.user_id, member.nickname)}
+                  />
               </motion.div>
             ))}
           </motion.div>
