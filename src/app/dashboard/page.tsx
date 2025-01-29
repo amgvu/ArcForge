@@ -186,8 +186,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-zinc-950 p-4">
-      <div className={`max-w-7xl w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-        <h1 className="text-2xl font-semibold font-[family-name:var(--font-geist-mono)] mb-4">Project Arcs</h1>
+      <div className={`max-w-[1800px] w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        <h1 className="text-2xl text-center font-semibold font-[family-name:var(--font-geist-mono)] mb-4">Project Arcs</h1>
         <div className=" space-y-5 shadow-md p-4">
           <div className="rounded-md shadow-md p-6">
             <label className="block text-sm font-medium mb-1">Select Server</label>
