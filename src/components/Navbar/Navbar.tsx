@@ -35,7 +35,7 @@ export default function DSNavbar() {
               <>
                 <button
                   onClick={() => signOut()}
-                  className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 transition-all bg-neutral-800 hover:bg-neutral-900"
+                  className="rounded-full cursor-pointer py-1 px-3 text-sm/6 font-semibold text-neutral-100 transition-all bg-neutral-800 hover:bg-neutral-900"
                 >
                   Sign Out
                 </button>
@@ -43,7 +43,7 @@ export default function DSNavbar() {
             ) : (
               <button
                 onClick={() => signIn()}
-                className="rounded-full py-1 px-3 text-sm/6 font-semibold text-neutral-100 transition-all bg-neutral-800 hover:bg-neutral-900"
+                className="rounded-full cursor-pointer py-1 px-3 text-sm/6 font-semibold text-neutral-100 transition-all bg-neutral-800 hover:bg-neutral-900"
               >
                 Sign In
               </button>
