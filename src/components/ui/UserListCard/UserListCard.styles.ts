@@ -1,5 +1,5 @@
 export const styles = {
-    card: "p-1 w-full transition-all",
+    card: "w-full transition-all",
     avatar: "w-14 h-14 mb-5 rounded-full object-cover",
     memberDetails: "flex-1",
     nicknameInput: "w-full text-white focus:outline-hidden focus:ring-3 focus:ring-[#4E4E4E]",
