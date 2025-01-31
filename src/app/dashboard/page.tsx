@@ -190,7 +190,7 @@ export default function Dashboard() {
         <div className="text-center font-[family-name:var(--font-geist-mono)] mb-2">
         <h1 className="text-2xl">Project Arcs</h1>
         <h2 className="font-light font-[family-name:var(--font-geist-sans)] py-3 text-lg">Welcome to the dashboard!
-          Any servers you have permissions to change nicknames in, will be found below. Please ensure that Worble has joined your server.
+          Any servers you have permissions to change nicknames should appear below. Please ensure that Worble has joined your server.
         </h2>
         <h1 className="text-2xl mt-4">Getting Started</h1>
         <h3 className="font-light font-[family-name:var(--font-geist-sans)] py-3 text-lg">Arcs are simply collections
@@ -202,10 +202,10 @@ export default function Dashboard() {
           </h3>
           <h3 className="font-semibold font-[family-name:var(--font-geist-sans)] py-6 text-md">This application
             is in an early stage of development. Features, functionality and user experience are subject to change.
-            If you run into any bugs or issues, please shoot me a message on Discord. Thanks!
+            If you run into any bugs or issues, please shoot me a message on Discord @ amg00. Thanks!
           </h3>
         </div>
-        <div className=" space-y-2 shadow-md p-4">
+        <div className="space-y-2 shadow-md p-4">
           <div className="rounded-md shadow-md p-6">
             <label className="block text-sm font-medium mb-1">My Servers</label>
             <DSMenu

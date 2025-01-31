@@ -55,6 +55,32 @@ export const updateNickname = async (guildId: string, userId: string, nickname: 
   return response.json();
 };
 
+export const fetchNicknames = async (guildId: string, userId: string): Promise<{
+  nicknames: Array<{
+    id: string;
+    guild_id: string;
+    user_id: string;
+    user_tag: string;
+    nickname: string;
+    updated_at: string;
+    is_active: boolean;
+  }>;
+}> => {
+  const { data, error } = await supabase
+    .from("nicknames")
+    .select("*")
+    .eq("guild_id", guildId)
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to fetch user nicknames: ${error.message}`);
+  }
+
+  return { nicknames: data };
+};
+
+
 export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Promise<{
   message: string;
   savedNicknames: Array<{
