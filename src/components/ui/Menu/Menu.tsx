@@ -24,7 +24,7 @@ const DSMenu: React.FC<DSMenuProps> = ({
         <span className={!selectedItem ? 'text-zinc-400' : ''}>
           {title}
         </span>
-        <ChevronDownIcon className="h-5 w-5 text-neutral-100" aria-hidden="true" />
+        <ChevronDownIcon className="h-5 w-5 cursor-pointer text-neutral-100" aria-hidden="true" />
       </Menu.Button>
       <Transition
         as={Fragment}

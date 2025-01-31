@@ -86,7 +86,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
           className="w-full p-2 pr-10 bg-zinc-800 border border-zinc-700 rounded-2xl text-[#D7DADC] focus:outline-hidden focus:ring-2 focus:ring-zinc-500"
           placeholder="Select or create an arc"
         />
-        <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+        <Combobox.Button className="absolute cursor-pointer inset-y-0 right-0 flex items-center pr-2">
           <ChevronDownIcon className="h-5 w-5 text-neutral-100" aria-hidden="true" />
         </Combobox.Button>
       </div>
@@ -100,7 +100,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
         leaveTo="transform opacity-0 scale-95"
       >
         <Combobox.Options 
-          className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-2xl bg-neutral-800 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm"
+          className="absolute z-10 mt-1 max-h-48 w-full border border-zinc-700 overflow-y-auto rounded-2xl bg-zinc-900 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm"
         >
           {isLoading ? (
             <div className="relative cursor-default select-none px-4 py-2 text-zinc-400">
@@ -117,8 +117,8 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
                   key={arc.id}
                   value={arc}
                   className={({ active }) => `
-                    relative cursor-default select-none py-2 pl-4 pr-4
-                    ${active ? 'bg-zinc-800 rounded-2xl text-[#D7DADC]' : 'text-[#D7DADC]'}
+                    relative cursor-pointer select-none py-2 pl-4 pr-4
+                    ${active ? 'bg-zinc-700 rounded-2xl text-[#D7DADC]' : 'text-[#D7DADC]'}
                   `}
                 >
                   {({ selected }) => (

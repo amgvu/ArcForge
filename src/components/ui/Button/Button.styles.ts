@@ -4,7 +4,7 @@ export const buttonStyles = (disabled: boolean) => {
   
     const disabledStyles = 'bg-zinc-900 text-zinc-400 cursor-not-allowed';
     const enabledStyles =
-      'bg-neutral-100 text-neutral-950 hover:bg-neutral-700 hover:text-zinc-100 active:bg-zinc-100 active:text-zinc-950';
+      'bg-neutral-100 text-neutral-950 cursor-pointer hover:bg-neutral-700 hover:text-zinc-100 active:bg-zinc-100 active:text-zinc-950';
   
     return `${baseStyles} ${disabled ? disabledStyles : enabledStyles}`;
   };
