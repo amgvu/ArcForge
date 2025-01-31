@@ -26,7 +26,7 @@ export default function Home() {
 
         <div className="text-center text-4xl space-y-4">
           <TextEffect delay={1.5}>
-          Making names and roles management in your Discord server fun, driven by AI.
+          Nicknames and roles management in your Discord server, but fun.
           </TextEffect>
           
           <div className={`transition-opacity duration-1000 ${showTextLoop ? 'opacity-100' : 'opacity-0'}`}>
@@ -63,13 +63,11 @@ export default function Home() {
               <span>LOTR</span>
               <span>Pokemon</span>
               <span>Fast Food</span>
-              <span>Rapper</span>
+              <span>Star Wars</span>
               <span>Actors</span>
-              <span>Sopranos</span>
-              <span>League</span>
+              <span>The Sopranos</span>
+              <span>League of Legends</span>
               <span>Severance</span>
-              <span>DC</span>
-              <span>NBA</span>
             </TextLoop>
             <h3 className='inline-flex whitespace-pre-wrap text-3xl'>
               {' '} arc?

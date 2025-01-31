@@ -8,6 +8,7 @@ export interface Member {
   username: string;
   nickname: string;
   globalName: string;
+  guild_id: string;
   userTag: string;
   avatar_url: string;
   roles: Role[];
