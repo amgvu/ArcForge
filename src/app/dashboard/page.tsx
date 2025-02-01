@@ -185,7 +185,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-zinc-900 p-4 space-y-4">
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-neutral-900 p-4 space-y-4">
       <div className={`max-w-[1320px] w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div className="text-center font-[family-name:var(--font-geist-mono)] mb-2">
         <h1 className="text-2xl">Project Arcs</h1>
