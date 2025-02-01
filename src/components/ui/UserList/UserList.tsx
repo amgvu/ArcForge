@@ -6,6 +6,7 @@ import { Member } from "@/types/types";
 interface UserListProps {
   members: Member[];
   isUpdating: string | null;
+  selectedServer: string;
   onNicknameChange: (index: number, nickname: string) => void;
   onApplyNickname: (userId: string, nickname: string) => void;
 }
@@ -37,6 +38,7 @@ const itemVariants = {
 export const DSUserList: React.FC<UserListProps> = ({
   members,
   isUpdating,
+  selectedServer,
   onNicknameChange,
   onApplyNickname,
 }) => {
@@ -48,6 +50,8 @@ export const DSUserList: React.FC<UserListProps> = ({
     acc[highestRole].push(member);
     return acc;
   }, {});
+
+  console.log(selectedServer)
 
   const sortedRoles = Object.keys(groupedMembers).sort((a, b) => {
     const roleAPosition = members.find((m) => m.roles[0]?.name === a)?.roles[0]?.position ?? -1;
@@ -72,7 +76,7 @@ export const DSUserList: React.FC<UserListProps> = ({
             </div>
             {groupedMembers[roleName].map((member, memberIndex) => (
               <motion.div
-                key={member.user_id}
+                key={`${member.user_id}`} 
                 className="mb-4"
                 custom={memberIndex}
                 initial="hidden"
@@ -80,14 +84,15 @@ export const DSUserList: React.FC<UserListProps> = ({
                 variants={itemVariants}
               >
                 <UserListCard
-                    member={member}
-                    isUpdating={isUpdating === member.user_id}
-                    onNicknameChange={(nickname) => {
-                      const originalIndex = members.findIndex(m => m.user_id === member.user_id);
-                      onNicknameChange(originalIndex, nickname);
-                    }}
-                    onApplyNickname={() => onApplyNickname(member.user_id, member.nickname)}
-                  />
+                  member={member}
+                  selectedServer={selectedServer}
+                  isUpdating={isUpdating === member.user_id}
+                  onNicknameChange={(nickname) => {
+                    const originalIndex = members.findIndex(m => m.user_id === member.user_id);
+                    onNicknameChange(originalIndex, nickname);
+                  }}
+                  onApplyNickname={() => onApplyNickname(member.user_id, member.nickname)}
+                />
               </motion.div>
             ))}
           </motion.div>

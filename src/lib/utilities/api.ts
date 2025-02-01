@@ -55,31 +55,26 @@ export const updateNickname = async (guildId: string, userId: string, nickname: 
   return response.json();
 };
 
-export const fetchNicknames = async (guildId: string, userId: string): Promise<{
-  nicknames: Array<{
-    id: string;
-    guild_id: string;
-    user_id: string;
-    user_tag: string;
-    nickname: string;
-    updated_at: string;
-    is_active: boolean;
-  }>;
-}> => {
-  const { data, error } = await supabase
-    .from("nicknames")
-    .select("*")
-    .eq("guild_id", guildId)
-    .eq("user_id", userId)
-    .order("updated_at", { ascending: false });
+export const fetchNicknames = async (guild_id: string, userId: string): Promise<Nickname[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('nicknames')
+      .select('*')
+      .eq('guild_id', guild_id)
+      .eq('user_id', userId)
+      .eq('is_active', false)
+      .order('updated_at', { ascending: false });
 
-  if (error) {
-    throw new Error(`Failed to fetch user nicknames: ${error.message}`);
+    if (error) {
+      console.error('Supabase error:', error);
+      throw new Error(`Failed to fetch nicknames: ${error.message}`);
+    }
+    return data || [];
+  } catch (err) {
+    console.error('Unexpected error in fetchNicknames:', err);
+    throw err;
   }
-
-  return { nicknames: data };
 };
-
 
 export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Promise<{
   message: string;

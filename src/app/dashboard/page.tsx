@@ -248,6 +248,7 @@ export default function Dashboard() {
               </div>
             )}
             <DSUserList
+              selectedServer={selectedServer}
               members={members}
               isUpdating={isUpdating}
               onNicknameChange={handleNicknameChange}
