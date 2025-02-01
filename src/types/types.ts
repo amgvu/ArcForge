@@ -40,8 +40,4 @@ export interface Nickname {
   userId: string;
   nickname: string;
   userTag: string;
-  guild_id: string;
-  updated_at: string;
-  created_at: string;
-  is_active: boolean;
 }
