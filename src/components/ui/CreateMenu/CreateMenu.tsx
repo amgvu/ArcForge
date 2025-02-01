@@ -83,7 +83,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
           onFocus={handleOpen}
           displayValue={(arc: Arc | null) => arc?.arc_name || ''}
           onChange={(event) => setQuery(event.target.value)}
-          className="w-full p-2 pr-10 bg-zinc-800 border border-zinc-700 rounded-2xl text-[#D7DADC] focus:outline-hidden focus:ring-2 focus:ring-zinc-500"
+          className="w-full p-2 pr-10 bg-neutral-800 border border-neutral-700 rounded-lg text-[#D7DADC] focus:outline-hidden focus:ring-2 focus:ring-neutral-500"
           placeholder="Select or create an arc"
         />
         <Combobox.Button className="absolute cursor-pointer inset-y-0 right-0 flex items-center pr-2">
@@ -100,14 +100,14 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
         leaveTo="transform opacity-0 scale-95"
       >
         <Combobox.Options 
-          className="absolute z-10 mt-1 max-h-48 w-full border border-zinc-700 overflow-y-auto rounded-2xl bg-zinc-900 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm"
+          className="absolute z-10 mt-1 max-h-48 w-full border border-neutral-700 overflow-y-auto rounded-lg bg-neutral-800 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm"
         >
           {isLoading ? (
-            <div className="relative cursor-default select-none px-4 py-2 text-zinc-400">
+            <div className="relative cursor-default select-none px-4 py-2 text-neutral-400">
               Loading arcs...
             </div>
           ) : filteredArcs.length === 0 && !showCreateOption ? (
-            <div className="relative cursor-default select-none px-4 py-2 text-zinc-400">
+            <div className="relative cursor-default select-none px-4 py-2 text-neutral-400">
               No arcs found
             </div>
           ) : (
@@ -118,7 +118,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
                   value={arc}
                   className={({ active }) => `
                     relative cursor-pointer select-none py-2 pl-4 pr-4
-                    ${active ? 'bg-zinc-700 rounded-2xl text-[#D7DADC]' : 'text-[#D7DADC]'}
+                    ${active ? 'bg-neutral-700 transition-all rounded-lg text-[#D7DADC]' : 'text-[#D7DADC]'}
                   `}
                 >
                   {({ selected }) => (
@@ -147,10 +147,10 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
                   value={{ id: -1, arc_name: query, guild_id: selectedServer }}
                   className={({ active }) => `
                     relative cursor-default select-none py-2 pl-4 pr-4 flex items-center
-                    ${active ? 'bg-zinc-800 text-[#D7DADC]' : 'text-[#D7DADC]'}
+                    ${active ? 'bg-neutral-800 text-[#D7DADC]' : 'text-[#D7DADC]'}
                   `}
                 >
-                  <PlusIcon className="h-4 w-4 mr-2 text-zinc-400" />
+                  <PlusIcon className="h-4 w-4 mr-2 text-neutral-400" />
                   <span className="block truncate">Create &apos;{query}&apos;</span>
                 </Combobox.Option>
               )}

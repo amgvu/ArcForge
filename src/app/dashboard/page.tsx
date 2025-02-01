@@ -185,22 +185,10 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-zinc-950 p-4 space-y-4">
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-zinc-900 p-4 space-y-4">
       <div className={`max-w-[1320px] w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div className="text-center font-[family-name:var(--font-geist-mono)] mb-2">
         <h1 className="text-2xl">Project Arcs</h1>
-        <h2 className="font-light font-[family-name:var(--font-geist-sans)] py-3 text-lg">Welcome to the dashboard!
-          Any servers you have permissions to change nicknames in should appear below. Please make sure that Worble has joined your server.
-          He&apos;s quiet, but he does all the work!
-        </h2>
-        <h1 className="text-2xl mt-4">Getting Started</h1>
-        <h3 className="font-light font-[family-name:var(--font-geist-sans)] py-3 text-lg">Arcs are simply collections
-        of nicknames you can save under titles, themes, etc of your choosing. Create an arc below by giving it a name, and then naming your members accordingly.
-          Once you&apos;re finished, hit &quot;Apply Arc&quot; to apply all the nicknames in your server at once, and hit &quot;Save
-          Arc&quot; to save it, so you can come back later if you wanna make changes or swap to a different arc.</h3>
-          <h3 className="font-light font-[family-name:var(--font-geist-sans)] text-lg">You can also name members individually, or revert them to their global
-            display name.
-          </h3>
           <h3 className="font-semibold font-[family-name:var(--font-geist-sans)] py-6 text-md">This application
             is in an early stage of development. Features, functionality and user experience are subject to change.
             If you run into any bugs or issues, please shoot me a message on Discord @ amg00. Thanks!
@@ -226,7 +214,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="rounded-md bg-zinc-950">
+          <div className="rounded-md">
             <label className="block text-sm font-medium mb-1">My Arcs</label>
             <DSCreateMenu
               selectedServer={selectedServer}
@@ -253,7 +241,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-          <div className="rounded-md bg-zinc-950">
+          <div className="rounded-md">
             {(serversError || membersError) && (
               <div className="mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
                 {serversError || membersError}
