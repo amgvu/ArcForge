@@ -133,7 +133,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
           >
             <div className="mt-4 pt-1 border-t border-neutral-600">
               <div className="flex items-center gap-2 mb-2 text-sm text-neutral-400">
-                Previous nicknames
+                Saved Nicknames
               </div>
               {isLoadingNicknames ? (
                 <div className="text-neutral-400 text-xs">Loading nicknames...</div>
