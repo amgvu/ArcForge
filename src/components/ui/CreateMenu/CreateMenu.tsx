@@ -83,7 +83,7 @@ const DSCreateMenu: React.FC<DSCreateMenuProps> = ({
           onFocus={handleOpen}
           displayValue={(arc: Arc | null) => arc?.arc_name || ''}
           onChange={(event) => setQuery(event.target.value)}
-          className="w-full p-2 pr-10 bg-neutral-800 border border-neutral-700 rounded-lg text-[#D7DADC] focus:outline-hidden focus:ring-2 focus:ring-neutral-500"
+          className="w-full p-2 pr-10 bg-neutral-800 border cursor-pointer focus:cursor-auto border-neutral-700 rounded-lg text-[#D7DADC] focus:outline-hidden focus:ring-2 focus:ring-neutral-500"
           placeholder="Select or create an arc"
         />
         <Combobox.Button className="absolute cursor-pointer inset-y-0 right-0 flex items-center pr-2">

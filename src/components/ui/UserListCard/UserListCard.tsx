@@ -32,6 +32,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
   useEffect(() => {
     if (!isInputFocused) {
       setInputValue(member.nickname || member.globalName || '');
+      
     }
   }, [member.nickname, member.globalName, isInputFocused]);
 
@@ -98,14 +99,14 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         <DSButton
           onClick={onApplyNickname}
           disabled={isUpdating || !inputValue}
-          className={styles.applyButton}
+          className={`${styles.applyButton} ${isUpdating ? 'motion-preset-pop motion-duration-1000' : ''}`}
         >
           {isUpdating ? 'Applying...' : 'Apply'}
         </DSButton>
         <DSButton
           onClick={handleRevert}
           disabled={isUpdating}
-          className={styles.applyButton}
+          className={`${styles.applyButton} active:bg-red-400`}
         >
           Revert
         </DSButton>
