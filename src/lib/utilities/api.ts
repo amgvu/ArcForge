@@ -62,7 +62,6 @@ export const fetchNicknames = async (guild_id: string, userId: string): Promise<
       .select('*')
       .eq('guild_id', guild_id)
       .eq('user_id', userId)
-      .eq('is_active', false)
       .order('updated_at', { ascending: false });
 
     if (error) {
@@ -153,12 +152,13 @@ export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Pro
   };
 };
 
-export const deleteNickname = async (guildId: string, userId: string): Promise<void> => {
+export const deleteNickname = async (guildId: string, userId: string, nickname: string): Promise<void> => {
   const { error } = await supabase
     .from('nicknames')
     .delete()
     .eq('guild_id', guildId)
-    .eq('user_id', userId);
+    .eq('user_id', userId)
+    .eq('nickname', nickname);
 
   if (error) {
     throw new Error(`Failed to delete nickname: ${error.message}`);

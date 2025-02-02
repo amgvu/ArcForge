@@ -19,7 +19,7 @@ export default function Home() {
     <div className="grid grid-rows-[20px_1fr_20px] bg-neutral-900 text-neutral-100 items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-mono)]">
       <main className="flex flex-col gap-8 row-start-2 items-center">
         <h1 className="font-bold text-9xl">
-          <TextEffect delay={0.5}>
+          <TextEffect per='char' delay={0.5}>
             PROJECT ARCS
           </TextEffect>
         </h1>

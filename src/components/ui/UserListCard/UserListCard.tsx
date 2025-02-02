@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { DSInput, DSButton } from '@/components/';
+import { DSInput, DSButton, DSPrompt } from '@/components/';
 import { styles } from './UserListCard.styles';
 import { Member, Nickname } from '@/types/types';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { fetchNicknames } from '@/lib/utilities/api';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
+import { fetchNicknames, deleteNickname } from '@/lib/utilities/api';
 
 interface UserListCardProps {
   member: Member;
@@ -28,11 +28,12 @@ export const UserListCard: React.FC<UserListCardProps> = ({
   const [previousNicknames, setPreviousNicknames] = useState<Nickname[]>([]);
   const [isLoadingNicknames, setIsLoadingNicknames] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [isPromptOpen, setIsPromptOpen] = useState(false);
+  const [nicknameToDelete, setNicknameToDelete] = useState<Nickname | null>(null);
 
   useEffect(() => {
     if (!isInputFocused) {
       setInputValue(member.nickname || member.globalName || '');
-      
     }
   }, [member.nickname, member.globalName, isInputFocused]);
 
@@ -66,6 +67,32 @@ export const UserListCard: React.FC<UserListCardProps> = ({
     const globalName = member.globalName || '';
     setInputValue(globalName);
     onNicknameChange(globalName);
+  };
+
+  const handleDeleteNickname = (nickname: Nickname) => {
+    setNicknameToDelete(nickname); 
+    setIsPromptOpen(true);
+  };
+
+  const confirmDeleteNickname = () => {
+    if (nicknameToDelete && selectedServer && member.user_id) {
+      deleteNickname(selectedServer, member.user_id, nicknameToDelete.nickname)
+        .then(() => {
+          setPreviousNicknames(prevNicknames =>
+            prevNicknames.filter(nick => nick.nickname !== nicknameToDelete.nickname)
+          );
+        })
+        .catch(error => {
+          console.error('Error deleting nickname:', error);
+        })
+        .finally(() => {
+          setIsPromptOpen(false);
+        });
+    }
+  };
+
+  const cancelDeleteNickname = () => {
+    setIsPromptOpen(false); 
   };
 
   return (
@@ -113,7 +140,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="p-1 hover:bg-neutral-100 transition-all cursor-pointer rounded-lg"
+          className="p-2 hover:bg-neutral-100 transition-all cursor-pointer rounded-lg"
         >
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -143,19 +170,33 @@ export const UserListCard: React.FC<UserListCardProps> = ({
               ) : (
                 <div className="flex flex-wrap mb-1 gap-2">
                   {previousNicknames.map((nickname, index) => (
-                    <motion.button
+                    <motion.div
                       key={`${nickname.userId}-${nickname.nickname}`}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="px-3 py-1 text-sm bg-neutral-700 cursor-pointer transition-all hover:bg-neutral-600 rounded-full"
-                      onClick={() => {
-                        setInputValue(nickname.nickname);
-                        onNicknameChange(nickname.nickname);
-                      }}
+                      className="relative"
                     >
-                      {nickname.nickname}
-                    </motion.button>
+                      <button
+                        onClick={() => {
+                          setInputValue(nickname.nickname);
+                          onNicknameChange(nickname.nickname);
+                        }}
+                        className="px-3 py-1 text-sm bg-neutral-700 cursor-pointer transition-all hover:bg-neutral-600 rounded-full"
+                      >
+                        {nickname.nickname}
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteNickname(nickname);
+                        }}
+                        className="absolute bottom-4 -right-1 p-1 cursor-pointer text-sm text-neutral-100 bg-neutral-800 rounded-full transition hover:bg-red-400"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </motion.div>
                   ))}
                 </div>
               )}
@@ -163,8 +204,16 @@ export const UserListCard: React.FC<UserListCardProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+      <DSPrompt
+        isOpen={isPromptOpen}
+        title="Confirm Deletion"
+        message={`Are you sure you want to delete the nickname "${nicknameToDelete?.nickname}"?`}
+        onConfirm={confirmDeleteNickname}
+        onCancel={cancelDeleteNickname}
+      />
     </div>
   );
 };
 
 export default UserListCard;
+
