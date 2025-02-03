@@ -10,6 +10,7 @@ export default function DSNavbar() {
   const navItems = [
     { name: "Home", href: "/" },
     ...(session ? [{ name: "Dashboard", href: "/dashboard" }] : []),
+    ...(session ? [{ name: "Arc Sandbox", href: "/dashboard/sandbox" }] : []),
   ];
 
   return (

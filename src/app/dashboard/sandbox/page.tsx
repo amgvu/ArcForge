@@ -1,14 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession, signIn } from "next-auth/react";
 import { GenerativeThemes } from '@/lib/utilities/gemini';
 import { DSInput } from '@/components'; 
 
 const DashboardPage = () => {
   const [theme, setTheme] = useState('');
+  const { data: session, status } = useSession();
+  const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState<string[] | null>(null); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+      setIsLoaded(true);
+    }, []);
+  
+    useEffect(() => {
+      if (status === 'unauthenticated') {
+        signIn('discord');
+      }
+    }, [status]);
 
   const fetchItems = async () => {
     if (!theme.trim()) {
@@ -30,15 +43,24 @@ const DashboardPage = () => {
     }
   };
 
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return <div>Redirecting to sign-in...</div>;
+  }
+
   return (
-    <div className="min-h-screen p-6 text-center bg-neutral-900">
-      <h1 className="text-2xl font-semibold font-[family-name:var(--font-geist-mono)] text-neutral-100">Theme Generator</h1>
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex justify-center bg-neutral-900 p-4 space-y-4">
+    <div className={`text-center space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      <h1 className="text-2xl font-[family-name:var(--font-geist-mono)] text-neutral-100">Theme Generator</h1>
       <div className="mt-4">
         <DSInput
           value={theme}
           onChange={(e) => setTheme(e.target.value)}
           placeholder="Enter a theme (e.g., Overwatch, Marvel Heroes)"
-          className="w-full text-center bg-neutral-800 text-neutral-100 rounded"
+          className={"w-full outline outline-neutral-600 text-center bg-neutral-800 text-neutral-100 rounded"}
         />
       </div>
       <button
@@ -57,6 +79,7 @@ const DashboardPage = () => {
           ))}
         </ul>
       )}
+    </div>
     </div>
   );
 };
