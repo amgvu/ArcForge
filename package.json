@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@radix-ui/react-tooltip": "^1.1.7",
