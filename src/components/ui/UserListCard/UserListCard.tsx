@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { DSInput, DSButton, DSPrompt } from '@/components/';
+import { DSInput, DSButton, DSDialog } from '@/components/';
 import { styles } from './UserListCard.styles';
 import { Member, Nickname } from '@/types/types';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -204,7 +204,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-      <DSPrompt
+      <DSDialog
         isOpen={isPromptOpen}
         title="Confirm Deletion"
         message={`Are you sure you want to delete the nickname "${nicknameToDelete?.nickname}"?`}
