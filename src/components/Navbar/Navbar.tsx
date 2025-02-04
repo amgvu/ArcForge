@@ -10,10 +10,10 @@ export default function DSNavbar() {
   const navItems = [
     { name: "Home", href: "/", icon: <Home className="h-5 w-5" /> },
     ...(session
-      ? [{ name: "Dashboard", href: "/dashboard", icon: <ScrollText className="h-5 w-5" /> }]
+      ? [{ name: "Control Center", href: "/dashboard", icon: <ScrollText className="h-5 w-5" /> }]
       : []),
     ...(session
-      ? [{ name: "Arc Sandbox", href: "/dashboard/sandbox", icon: <Sparkles className="h-5 w-5" /> }]
+      ? [{ name: "Arc Studio", href: "/dashboard/sandbox", icon: <Sparkles className="h-5 w-5" /> }]
       : []),
   ];
 

@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 
 export const GenerativeThemes = async (theme: string): Promise<string> => {
-  const apiKey = process.env.GEMINI_API_KEY as string;
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
   const genAI = new GoogleGenerativeAI(apiKey);
 
   const schema = {

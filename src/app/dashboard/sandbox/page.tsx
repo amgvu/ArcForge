@@ -54,7 +54,8 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex justify-center bg-neutral-900 p-4 space-y-4">
     <div className={`text-center space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-      <h1 className="text-2xl font-[family-name:var(--font-geist-mono)] text-neutral-100">Theme Generator</h1>
+      <h1 className="text-2xl font-semibold text-neutral-100">Arc Studio</h1>
+      <p>This feature uses generative AI to create names. Answers may be false or inaccurate.</p>
       <div className="mt-4">
         <DSInput
           value={theme}
@@ -65,7 +66,7 @@ const DashboardPage = () => {
       </div>
       <button
         onClick={fetchItems}
-        className="px-4 py-2 mt-4 text-neutral-100 bg-neutral-600 rounded cursor-pointer hover:bg-indigo-500 transition-all"
+        className="px-4 py-2 mt-4 text-neutral-100 bg-neutral-600 rounded cursor-pointer hover:bg-blue-400 transition-all"
       >
         Generate
       </button>
