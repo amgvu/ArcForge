@@ -2,7 +2,7 @@
 
 import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { DSButton, DSMenu, DSUserList, DSCreateMenu, DSInputDialog } from "@/components";
+import { DSButton, DSMenu, DSUserList, DSCreateMenu } from "@/components";
 import { useServers, useMembers } from "@/lib/hooks";
 import { updateNickname, saveNicknames } from "@/lib/utilities";
 import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
@@ -20,7 +20,6 @@ export default function Dashboard() {
   const [selectedServerName, setSelectedServerName] = useState<string>('');
   const { members: fetchedMembers, error: membersError } = useMembers(selectedServer);
   const [members, setMembers] = useState<Member[]>([]);
-  const [isThemeDialogOpen, setIsThemeDialogOpen] = useState(false);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -242,17 +241,6 @@ export default function Dashboard() {
           </div>
           <div className="justify-start">
             </div>
-
-            <DSInputDialog
-              isOpen={isThemeDialogOpen}
-              title="Theme Sandbox"
-              placeholder="Enter a theme (Overwatch, etc)"
-              onGenerate={(input) => {
-                console.log('Theme input:', input);
-                setIsThemeDialogOpen(false);
-              }}
-              onClose={() => setIsThemeDialogOpen(false)}
-            />
         </div>
 
           <div className="rounded-md">
