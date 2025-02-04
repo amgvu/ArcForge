@@ -18,7 +18,7 @@ export default function DSNavbar() {
   ];
 
   return (
-    <nav className="top-0 left-0 w-full backdrop-blur-md z-50">
+    <nav className="fixed top-0 z-50 left-[calc(50%_+_70px)] -translate-x-1/2">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24">
         <div className="flex justify-between items-center h-full">
           <ul className="menu menu-horizontal bg-neutral-800 border-1 border-neutral-700 rounded-box">
@@ -29,8 +29,6 @@ export default function DSNavbar() {
                 </Link>
               </li>
             ))}
-          </ul>
-          <ul className="menu menu-horizontal bg-neutral-800 border-1 border-neutral-700 rounded-box">
             {session ? (
               <li>
                 <button

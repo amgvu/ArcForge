@@ -185,73 +185,97 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] flex items-center justify-center bg-neutral-900 p-4 space-y-4">
-      <div className={`max-w-[1320px] w-full space-y-6 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="text-center font-bold font-[family-name:var(--font-geist-sans)] mb-2">
-        <h1 className="text-2xl">Control Center</h1>
-        </div>
-        <div className="space-y-2">
-          <div className="rounded-md">
-            <label className="block text-sm font-medium mb-1">My Servers</label>
-            <DSMenu
-              items={servers.map((server: { name: string }) => server.name)}
-              placeholder='Select a server'
-              selectedItem={selectedServerName}
-              setSelectedItem={(value: string) => {
-                const selected = servers.find((server: { name: string; id: string }) => server.name === value);
-                if (selected) {
-                  setSelectedServerName(selected.name);
-                  setSelectedServer(selected.id);
-                } else {
-                  setSelectedServerName('');
-                  setSelectedServer('');
-                }
-              }}
-            />
-          </div>
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] text-[#D7DADC] bg-neutral-900">
+      <div className="drawer lg:drawer-open">
+        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+        
+        <div className="drawer-content flex flex-col">
 
-          <div className="rounded-md">
-            <label className="block text-sm font-medium mb-1">My Arcs</label>
-            <DSCreateMenu
-              selectedServer={selectedServer}
-              selectedArc={selectedArc}
-              setSelectedArc={setSelectedArc}
-              onCreateNewArc={handleCreateNewArc}
-            />
-          </div>
-
-          <div className="flex justify-end mt-4 space-x-4">
-          <DSButton
-            onClick={applyAllNicknames}
-            disabled={isApplyingAll || members.some((m: Member) => !m.nickname)}
-          >
-            {isApplyingAll ? 'Applying...' : 'Apply Arc'}
-          </DSButton>
-          <div className="">
-            <DSButton
-              onClick={handleSaveArc}
-              disabled={isSavingArc || !selectedServer || !selectedArc || members.length === 0}
-            >
-              {isSavingArc ? 'Saving...' : 'Save Arc'}
-            </DSButton>
-          </div>
-          <div className="justify-start">
-            </div>
-        </div>
-
-          <div className="rounded-md">
-            {(serversError || membersError) && (
-              <div className="mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
-                {serversError || membersError}
+          <div className="p-4">
+            <div className={`w-auto] w-full transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+              <div className="flex justify-between items-center">
+                <div className="text-center font-bold font-[family-name:var(--font-geist-sans)]">
+                  <h1 className="text-2xl">Control Center</h1>
+                </div>
+                <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">
+                  Open Menu
+                </label>
               </div>
-            )}
-            <DSUserList
-              selectedServer={selectedServer}
-              members={members}
-              isUpdating={isUpdating}
-              onNicknameChange={handleNicknameChange}
-              onApplyNickname={(userId: string, nickname: string) => handleUpdateNickname(userId, nickname, true)}
-            />
+
+              <div className="flex flex-col">
+                <div className="space-y-4">
+                  <div className="flex justify-end space-x-4">
+                    <DSButton
+                      onClick={applyAllNicknames}
+                      disabled={isApplyingAll || members.some((m: Member) => !m.nickname)}
+                    >
+                      {isApplyingAll ? 'Applying...' : 'Apply Arc'}
+                    </DSButton>
+                    <DSButton
+                      onClick={handleSaveArc}
+                      disabled={isSavingArc || !selectedServer || !selectedArc || members.length === 0}
+                    >
+                      {isSavingArc ? 'Saving...' : 'Save Arc'}
+                    </DSButton>
+                  </div>
+                </div>
+
+                <div className="justify-items-center">
+                  {serversError || membersError ? (
+                    <div className="mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
+                      {serversError || membersError}
+                    </div>
+                  ) : null}
+                  <DSUserList
+                    selectedServer={selectedServer}
+                    members={members}
+                    isUpdating={isUpdating}
+                    onNicknameChange={handleNicknameChange}
+                    onApplyNickname={(userId: string, nickname: string) => handleUpdateNickname(userId, nickname, true)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="drawer-side">
+          <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
+          <div className="menu bg-neutral-800 min-h-full w-80 p-4">
+            <div className="space-y-6">
+              <div className="rounded-md">
+                <label className="block text-sm font-medium mb-1">My Servers</label>
+                <DSMenu
+                  items={servers.map((server: { name: string }) => server.name)}
+                  placeholder="Select a server"
+                  selectedItem={selectedServerName}
+                  setSelectedItem={(value: string) => {
+                    const selected = servers.find((server: { name: string; id: string }) => server.name === value);
+                    if (selected) {
+                      setSelectedServerName(selected.name);
+                      setSelectedServer(selected.id);
+                    } else {
+                      setSelectedServerName('');
+                      setSelectedServer('');
+                    }
+                  }}
+                />
+              </div>
+              <div className="rounded-md">
+                <label className="block text-sm font-medium mb-1">My Arcs</label>
+                <DSCreateMenu
+                  selectedServer={selectedServer}
+                  selectedArc={selectedArc}
+                  setSelectedArc={setSelectedArc}
+                  onCreateNewArc={handleCreateNewArc}
+                />
+              </div>
+              <div className="border-t border-base-300 pt-4">
+                <ul>
+
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
