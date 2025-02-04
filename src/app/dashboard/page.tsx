@@ -241,9 +241,6 @@ export default function Dashboard() {
             </DSButton>
           </div>
           <div className="justify-start">
-              <DSButton onClick={() => setIsThemeDialogOpen(true)}>
-                Theme Sandbox
-              </DSButton>
             </div>
 
             <DSInputDialog

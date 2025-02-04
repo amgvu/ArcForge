@@ -2,6 +2,7 @@
 
 @plugin 'tailwindcss-animate';
 @plugin 'tailwindcss-motion';
+@plugin "daisyui";
 
 @custom-variant dark (&:is(.dark *));
 
