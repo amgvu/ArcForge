@@ -97,17 +97,17 @@ export const UserListCard: React.FC<UserListCardProps> = ({
 
   return (
   <div
-    className={`${styles.card} relative bg-center`}
+    className={`${styles.card} relative bg-no-repeat bg-left`}
     style={{ backgroundImage: `url(${member.avatar_url})` }}
   >
-    <div className="absolute inset-0 bg-black/50"></div>
+    <div className="absolute inset-0 bg-black/10"></div>
       <div className="flex items-center space-x-4 relative z-10">
         <div className="w-1/3 h-full flex-shrink-0 relative">
           <Image
             src={member.avatar_url}
             alt={`${member.username}'s avatar`}
-            width={128}
-            height={128}
+            width={64}
+            height={64}
             className="rounded-full m-auto object-cover"
             onError={(e) => {
               e.currentTarget.src = '/default-avatar.png';
