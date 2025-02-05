@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ClientProvider from '@/components/ClientProvider'
 import "./globals.css";
-import Navbar from "@/components/Navbar/Navbar";
+import Sidebar from "@/components/Sidebar/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PROJECT ARCS",
+  title: "Project Arcs",
   description: "A tool for managing nicknames",
 };
 
@@ -30,8 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} w-full h-full bg-neutral-900`}
       >
         <ClientProvider>
-        <Navbar />
-        {children}
+        <Sidebar>{children}</Sidebar>
         </ClientProvider>
       </body>
     </html>
