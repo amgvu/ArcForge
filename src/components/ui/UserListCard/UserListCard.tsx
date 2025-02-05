@@ -96,37 +96,46 @@ export const UserListCard: React.FC<UserListCardProps> = ({
   };
 
   return (
-    <div className={styles.card}>
-      <div className="flex items-center space-x-4">
-        <Image
-          src={member.avatar_url}
-          alt={`${member.username}'s avatar`}
-          width={40}
-          height={40}
-          className={styles.avatar}
-          onError={(e) => {
-            e.currentTarget.src = '/default-avatar.png';
-          }}
-        />
-        <div className={styles.memberDetails}>
-          <DSInput
-            value={inputValue}
-            onChange={handleInputChange}
-            onFocus={() => setIsInputFocused(true)}
-            onBlur={() => setIsInputFocused(false)}
-            placeholder={`Nickname for ${member.username}`}
-            className={styles.nicknameInput}
-            disabled={isUpdating}
+  <div
+    className={`${styles.card} relative bg-center`}
+    style={{ backgroundImage: `url(${member.avatar_url})` }}
+  >
+    <div className="absolute inset-0 bg-black/50"></div>
+      <div className="flex items-center space-x-4 relative z-10">
+        <div className="w-1/3 h-full flex-shrink-0 relative">
+          <Image
+            src={member.avatar_url}
+            alt={`${member.username}'s avatar`}
+            width={128}
+            height={128}
+            className="rounded-full m-auto object-cover"
+            onError={(e) => {
+              e.currentTarget.src = '/default-avatar.png';
+            }}
           />
-          <div className={styles.username}>
-            {member.username}{member.userTag}
-          </div>
         </div>
-        
+      <div className="w-2/3 flex flex-col justify-center">
+        <DSInput
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => setIsInputFocused(false)}
+          placeholder={`Nickname for ${member.username}`}
+          className={styles.nicknameInput}
+          disabled={isUpdating}
+        />
+        <div className={styles.username}>
+          {member.username}{member.userTag}
+        </div>
+      </div>
+
+      <div className="flex flex-col space-y-2">
         <DSButton
           onClick={onApplyNickname}
           disabled={isUpdating || !inputValue}
-          className={`${styles.applyButton} ${isUpdating ? 'motion-preset-pop motion-duration-1000' : ''}`}
+          className={`${styles.applyButton} ${
+            isUpdating ? 'motion-preset-pop motion-duration-1000' : ''
+          }`}
         >
           {isUpdating ? 'Applying...' : 'Apply'}
         </DSButton>
@@ -137,18 +146,23 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         >
           Revert
         </DSButton>
-        
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 hover:bg-neutral-100 transition-all cursor-pointer rounded-lg"
-        >
-          <motion.div
-            animate={{ rotate: isExpanded ? 180 : 0 }}
-          >
-            {isExpanded ? <ChevronUp className="w-5 h-5 text-neutral-500" /> : <ChevronDown className="w-5 h-5 text-neutral-500" />}
-          </motion.div>
-        </button>
       </div>
+
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="p-2 hover:bg-neutral-100 transition-all cursor-pointer rounded-lg"
+      >
+        <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
+          {isExpanded ? (
+            <ChevronUp className="w-5 h-5 text-neutral-500" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-neutral-500" />
+          )}
+        </motion.div>
+      </button>
+    </div>
+
+
 
       <AnimatePresence>
         {isExpanded && (
