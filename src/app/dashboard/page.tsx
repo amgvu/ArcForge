@@ -195,7 +195,6 @@ export default function Dashboard() {
             <div className={`w-auto] w-full transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
               <div className="flex justify-between items-center">
                 <div className="text-center font-bold font-[family-name:var(--font-geist-sans)]">
-                  <h1 className="text-2xl">Control Center</h1>
                 </div>
                 <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">
                   Open Menu
@@ -204,20 +203,6 @@ export default function Dashboard() {
 
               <div className="flex flex-col">
                 <div className="space-y-4">
-                  <div className="flex justify-end space-x-4">
-                    <DSButton
-                      onClick={applyAllNicknames}
-                      disabled={isApplyingAll || members.some((m: Member) => !m.nickname)}
-                    >
-                      {isApplyingAll ? 'Applying...' : 'Apply Arc'}
-                    </DSButton>
-                    <DSButton
-                      onClick={handleSaveArc}
-                      disabled={isSavingArc || !selectedServer || !selectedArc || members.length === 0}
-                    >
-                      {isSavingArc ? 'Saving...' : 'Save Arc'}
-                    </DSButton>
-                  </div>
                 </div>
 
                 <div className="justify-items-center">
@@ -239,7 +224,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="drawer-side">
+        <div className="drawer-side ml-60">
           <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
           <div className="menu bg-neutral-800 min-h-full w-80 p-4">
             <div className="space-y-6">
@@ -270,9 +255,22 @@ export default function Dashboard() {
                   onCreateNewArc={handleCreateNewArc}
                 />
               </div>
-              <div className="border-t border-base-300 pt-4">
+              <div className="border-t border-neutral-700 pt-4">
                 <ul>
-
+                <div className="flex justify-end space-x-4">
+                    <DSButton
+                      onClick={applyAllNicknames}
+                      disabled={isApplyingAll || members.some((m: Member) => !m.nickname)}
+                    >
+                      {isApplyingAll ? 'Applying...' : 'Apply Arc'}
+                    </DSButton>
+                    <DSButton
+                      onClick={handleSaveArc}
+                      disabled={isSavingArc || !selectedServer || !selectedArc || members.length === 0}
+                    >
+                      {isSavingArc ? 'Saving...' : 'Save Arc'}
+                    </DSButton>
+                  </div>
                 </ul>
               </div>
             </div>
