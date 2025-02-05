@@ -226,10 +226,10 @@ export default function Dashboard() {
 
         <div className="drawer-side ml-60">
           <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-          <div className="menu bg-neutral-800 min-h-full w-80 p-4">
-            <div className="space-y-6">
+          <div className="menu bg-neutral-800 border-r border-neutral-700 min-h-full w-80 p-4">
+            <div className="space-y-6 mt-3">
               <div className="rounded-md">
-                <label className="block text-sm font-medium mb-1">My Servers</label>
+                <label className="block text-lg font-medium mb-3">My Servers</label>
                 <DSMenu
                   items={servers.map((server: { name: string }) => server.name)}
                   placeholder="Select a server"
@@ -247,7 +247,7 @@ export default function Dashboard() {
                 />
               </div>
               <div className="rounded-md">
-                <label className="block text-sm font-medium mb-1">My Arcs</label>
+                <label className="block text-lg font-medium mb-3">My Arcs</label>
                 <DSCreateMenu
                   selectedServer={selectedServer}
                   selectedArc={selectedArc}
