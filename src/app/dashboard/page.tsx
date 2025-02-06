@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList, DSCreateMenu, DSInput } from "@/components";
 import { useServers, useMembers } from "@/lib/hooks";
 import { updateNickname, saveNicknames } from "@/lib/utilities";
+import { characterGen } from "@/lib/utilities/gemini/characters"
 import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
 import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utilities/api";
 
@@ -20,6 +21,9 @@ export default function Dashboard() {
   const [selectedServerName, setSelectedServerName] = useState<string>('');
   const { members: fetchedMembers, error: membersError } = useMembers(selectedServer);
   const [members, setMembers] = useState<Member[]>([]);
+  const [theme, setTheme] = useState<string>("");
+  const [generatedThemes, setGeneratedThemes] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -59,6 +63,30 @@ export default function Dashboard() {
   
     loadArcNicknames();
   }, [selectedArc]);
+
+  const handleGenerateThemes = async () => {
+    if (!fetchedMembers || fetchedMembers.length === 0) {
+      alert("No members found in the server. Please select a valid server.");
+      return;
+    }
+
+    if (!theme.trim()) {
+      alert("Please enter a theme.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const numCharacters = fetchedMembers.length;
+      const themes = await characterGen(theme, numCharacters);
+      setGeneratedThemes(themes);
+    } catch (error) {
+      console.error("Failed to generate themes:", error);
+      alert("Failed to generate themes. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
             
 
   const handleUpdateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
@@ -289,10 +317,18 @@ export default function Dashboard() {
 
                 <DSInput className="transition-all bg-neutral-800 border rounded-lg border-neutral-600"
                         placeholder="Enter a movie, show, game, etc"
+                        value={theme}
+                        onChange={(e) => setTheme(e.target.value)}
                           />
                   <div className="flex justify-end space-x-4 mt-3">
-                  <DSButton>Generate</DSButton>
+                  <DSButton onClick={handleGenerateThemes} disabled={loading}>Generate</DSButton>
                   </div>
+                  {generatedThemes && (
+                  <div className=" bg-neutral-800 rounded-lg text-neutral-300">
+                    <h4 className="text-lg font-medium">Characters</h4>
+                    <p className="mt-2">{generatedThemes}</p>
+                  </div>
+                )}
                 </div>
               </div>
             </div>
