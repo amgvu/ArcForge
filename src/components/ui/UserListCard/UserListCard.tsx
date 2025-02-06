@@ -45,8 +45,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         try {
           const nicknames = await fetchNicknames(selectedServer, member.user_id);
           setPreviousNicknames(nicknames);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
+        } catch (error) {
           console.error('Failed to fetch nicknames:', error);
           setFetchError('Unable to fetch previous nicknames. Please try again.');
         } finally {
@@ -97,18 +96,18 @@ export const UserListCard: React.FC<UserListCardProps> = ({
 
   return (
   <div
-    className={`${styles.card} relative bg-no-repeat bg-left`}
+    className={`${styles.card} relative bg-clip-border bg-no-repeat bg-left`}
     style={{ backgroundImage: `url(${member.avatar_url})` }}
   >
-    <div className="absolute inset-0 bg-black/10"></div>
+    <div className="absolute inset-0 bg-black/5"></div>
       <div className="flex items-center space-x-4 relative z-10">
         <div className="w-1/3 h-full flex-shrink-0 relative">
           <Image
             src={member.avatar_url}
             alt={`${member.username}'s avatar`}
-            width={64}
-            height={64}
-            className="rounded-full m-auto object-cover"
+            width={128}
+            height={128}
+            className={styles.avatar}
             onError={(e) => {
               e.currentTarget.src = '/default-avatar.png';
             }}

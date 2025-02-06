@@ -192,7 +192,7 @@ export default function Dashboard() {
         <div className="drawer-content flex flex-col">
 
           <div className="p-4">
-            <div className={`w-auto] w-full transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`w-auto transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
               <div className="flex justify-between items-center">
                 <div className="text-center font-bold font-[family-name:var(--font-geist-sans)]">
                 </div>
@@ -202,22 +202,26 @@ export default function Dashboard() {
               </div>
 
               <div className="flex flex-col">
-                <div className="space-y-4">
+                <div className="text-4xl text-neutral-600 font-semibold text-center py-5">
                 </div>
-
                 <div className="justify-items-center">
                   {serversError || membersError ? (
                     <div className="mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400">
                       {serversError || membersError}
                     </div>
-                  ) : null}
-                  <DSUserList
-                    selectedServer={selectedServer}
-                    members={members}
-                    isUpdating={isUpdating}
-                    onNicknameChange={handleNicknameChange}
-                    onApplyNickname={(userId: string, nickname: string) => handleUpdateNickname(userId, nickname, true)}
-                  />
+                  ) : selectedServer ? (
+                    <DSUserList
+                      selectedServer={selectedServer}
+                      members={members}
+                      isUpdating={isUpdating}
+                      onNicknameChange={handleNicknameChange}
+                      onApplyNickname={(userId: string, nickname: string) => handleUpdateNickname(userId, nickname, true)}
+                    />
+                  ) : (
+                    <div className="text-center font-semibold text-4xl text-neutral-500 py-5">
+                      Select a server to view and manage members
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
