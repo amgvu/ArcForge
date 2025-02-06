@@ -1,7 +1,6 @@
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 
-
-export const GenerativeThemes = async (theme: string): Promise<string> => {
+export const GenerativeThemes = async (theme: string, numMembers: number): Promise<string> => {
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
   const genAI = new GoogleGenerativeAI(apiKey);
 
@@ -29,7 +28,7 @@ export const GenerativeThemes = async (theme: string): Promise<string> => {
     },
   });
 
-  const prompt = `List 20 popular characters given the theme, ${theme}, ordered from most to least popular. Please omit any explanations, disclaimers, or unnecessary text.`;
+  const prompt = `List ${numMembers} popular characters given the theme, ${theme}, ordered from most to least popular. Please omit any explanations, disclaimers, or unnecessary text.`;
 
   try {
     const result = await model.generateContent(prompt);

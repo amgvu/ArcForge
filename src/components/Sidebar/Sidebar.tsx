@@ -2,7 +2,7 @@
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
-import { Home, ScrollText, Sparkles, LogIn, LogOut, Menu } from "lucide-react";
+import { Home, ScrollText, LogIn, LogOut, Menu } from "lucide-react";
 
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
@@ -11,9 +11,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     { name: "Home", href: "/", icon: <Home className="h-5 w-5" /> },
     ...(session
       ? [{ name: "Control Center", href: "/dashboard", icon: <ScrollText className="h-5 w-5" /> }]
-      : []),
-    ...(session
-      ? [{ name: "Arc Studio", href: "/dashboard/sandbox", icon: <Sparkles className="h-5 w-5" /> }]
       : []),
   ];
 
