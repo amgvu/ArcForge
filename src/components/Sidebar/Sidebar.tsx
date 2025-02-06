@@ -2,7 +2,7 @@
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
-import { Home, ScrollText, LogIn, LogOut, Menu } from "lucide-react";
+import { Home, ScrollText, LogIn, LogOut, ShieldX, Aperture, Menu, UsersRound, Coffee, Mail } from "lucide-react";
 
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
@@ -10,9 +10,16 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const navItems = [
     { name: "Home", href: "/", icon: <Home className="h-5 w-5" /> },
     ...(session
-      ? [{ name: "Control Center", href: "/dashboard", icon: <ScrollText className="h-5 w-5" /> }]
+      ? [{ name: "ArcPanel", href: "/dashboard", icon: <Aperture className="h-5 w-5" /> }]
       : []),
+
+      { name: "Getting Started", href: "/getting-started", icon: <Coffee className="h-5 w-5" /> },
+      { name: "About Us", href: "/about-us", icon: <UsersRound className="h-5 w-5" /> },
+      { name: "Contact", href: "/contact", icon: <Mail className="h-5 w-5" /> },
+      { name: "Privacy Policy", href: "/privacy-policy", icon: <ShieldX className="h-5 w-5" /> },
+      { name: "Terms Of Service", href: "/terms-of-service", icon: <ScrollText className="h-5 w-5" /> },
   ];
+  
 
   return (
     <div className="drawer lg:drawer-open">

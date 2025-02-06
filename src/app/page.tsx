@@ -26,7 +26,7 @@ export default function Home() {
 
         <div className="text-center font-light text-4xl space-y-4">
           <TextEffect delay={1.5}>
-          Nicknames and roles management in your Discord server, but fun.
+          Nicknames management in your Discord server, but fun.
           </TextEffect>
           
           <div className={`transition-opacity font-semibold duration-1000 ${showTextLoop ? 'opacity-100' : 'opacity-0'}`}>
@@ -62,7 +62,7 @@ export default function Home() {
               <span>Marvel</span>
               <span>LOTR</span>
               <span>Pokemon</span>
-              <span>Fast Food</span>
+              <span>DC</span>
               <span>Star Wars</span>
               <span>Actors</span>
               <span>The Sopranos</span>
@@ -76,9 +76,6 @@ export default function Home() {
         </div>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <TextEffect delay={5}>
-          Coming soon...
-        </TextEffect>
       </footer>
     </div>
   );
