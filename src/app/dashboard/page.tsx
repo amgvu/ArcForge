@@ -2,7 +2,7 @@
 
 import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { DSButton, DSMenu, DSUserList, DSCreateMenu } from "@/components";
+import { DSButton, DSMenu, DSUserList, DSCreateMenu, DSInput } from "@/components";
 import { useServers, useMembers } from "@/lib/hooks";
 import { updateNickname, saveNicknames } from "@/lib/utilities";
 import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
@@ -259,7 +259,7 @@ export default function Dashboard() {
                   onCreateNewArc={handleCreateNewArc}
                 />
               </div>
-              <div className="border-t border-neutral-700 pt-4">
+              <div>
                 <ul>
                 <div className="flex justify-end space-x-4">
                     <DSButton
@@ -276,6 +276,24 @@ export default function Dashboard() {
                     </DSButton>
                   </div>
                 </ul>
+              </div>
+
+              <div className="border-t border-neutral-700 pt-4">
+                <label className="inline-block text-lg font-medium">Arc Studio</label>
+                  <h2 className="inline-block mx-2 font-light text-neutral-500">experimental</h2>
+                  <h3 className="font-light mt-1 text-sm text-neutral-400">
+                    Generate themes for arcs and apply them within seconds
+                  </h3>
+
+                  <div className="mt-4">
+
+                <DSInput className="transition-all bg-neutral-800 border rounded-lg border-neutral-600"
+                        placeholder="Enter a movie, show, game, etc"
+                          />
+                  <div className="flex justify-end space-x-4 mt-3">
+                  <DSButton>Generate</DSButton>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession, signIn } from "next-auth/react";
-import { GenerativeThemes } from '@/lib/utilities/gemini';
+import { GenerativeThemes } from '@/lib/utilities/gemini/characters';
 import { DSInput } from '@/components'; 
 
 const DashboardPage = () => {

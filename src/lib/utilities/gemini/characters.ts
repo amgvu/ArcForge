@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 
+
 export const GenerativeThemes = async (theme: string): Promise<string> => {
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
   const genAI = new GoogleGenerativeAI(apiKey);
@@ -21,7 +22,7 @@ export const GenerativeThemes = async (theme: string): Promise<string> => {
   };
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: schema,
