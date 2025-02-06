@@ -65,7 +65,6 @@ export const DSUserList: React.FC<UserListProps> = ({
         {sortedRoles.map((roleName, roleIndex) => (
           <motion.div
             key={roleName}
-            className="mb-4"
             custom={roleIndex}
             initial="hidden"
             animate="visible"

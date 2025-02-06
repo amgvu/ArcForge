@@ -64,22 +64,33 @@ export default function Dashboard() {
     loadArcNicknames();
   }, [selectedArc]);
 
-  const handleGenerateThemes = async () => {
+  const handleGenerateCharacters = async () => {
     if (!fetchedMembers || fetchedMembers.length === 0) {
       alert("No members found in the server. Please select a valid server.");
       return;
     }
-
+  
     if (!theme.trim()) {
       alert("Please enter a theme.");
       return;
     }
-
+  
     setLoading(true);
     try {
       const numCharacters = fetchedMembers.length;
-      const themes = await characterGen(theme, numCharacters);
-      setGeneratedThemes(themes);
+      const characters = await characterGen(theme, numCharacters);
+      setGeneratedThemes(characters);
+      console.log(generatedThemes)
+      
+      const generatedNames = characters.split(',').map(name => name.trim());
+      
+      setMembers(currentMembers => 
+        currentMembers.map((member, index) => ({
+          ...member,
+          nickname: generatedNames[index] || member.nickname 
+        }))
+      );
+  
     } catch (error) {
       console.error("Failed to generate themes:", error);
       alert("Failed to generate themes. Please try again.");
@@ -321,14 +332,9 @@ export default function Dashboard() {
                         onChange={(e) => setTheme(e.target.value)}
                           />
                   <div className="flex justify-end space-x-4 mt-3">
-                  <DSButton onClick={handleGenerateThemes} disabled={loading}>Generate</DSButton>
+                  <DSButton onClick={handleGenerateCharacters} disabled={loading}>Generate</DSButton>
                   </div>
-                  {generatedThemes && (
-                  <div className=" bg-neutral-800 rounded-lg text-neutral-300">
-                    <h4 className="text-lg font-medium">Characters</h4>
-                    <p className="mt-2">{generatedThemes}</p>
-                  </div>
-                )}
+                 
                 </div>
               </div>
             </div>
