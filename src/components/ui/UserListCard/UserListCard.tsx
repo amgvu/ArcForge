@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { DSInput, DSButton, DSDialog } from '@/components/';
 import { styles } from './UserListCard.styles';
 import { Member, Nickname } from '@/types/types';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { fetchNicknames, deleteNickname } from '@/lib/utilities/api';
 
@@ -30,6 +30,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isPromptOpen, setIsPromptOpen] = useState(false);
   const [nicknameToDelete, setNicknameToDelete] = useState<Nickname | null>(null);
+  const controls = useAnimation();
 
   useEffect(() => {
     if (!isInputFocused) {
@@ -86,20 +87,32 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         })
         .finally(() => {
           setIsPromptOpen(false);
+          setNicknameToDelete(null);
         });
     }
   };
 
   const cancelDeleteNickname = () => {
     setIsPromptOpen(false); 
+    setNicknameToDelete(null);
+  };
+
+  const handleApplyNickname = async () => {
+    await controls.start({
+      y: [0, 150, 0],
+      transition: { duration: 0.2, ease: "easeOut" },
+    });
+    onApplyNickname();
   };
 
   return (
-  <div
-    className={`${styles.card} relative bg-clip-border bg-no-repeat bg-left`}
-    style={{ backgroundImage: `url(${member.avatar_url})` }}
-  >
-    <div className="absolute inset-0 bg-black/5"></div>
+    <motion.div
+      initial={{ y: 0 }}
+      animate={controls}
+      className={`${styles.card} relative bg-clip-border bg-no-repeat bg-left`}
+      style={{ backgroundImage: `url(${member.avatar_url})` }}
+    >
+      <div className="absolute inset-0 bg-black/5"></div>
       <div className="flex items-center space-x-4 relative z-10">
         <div className="w-1/3 h-full flex-shrink-0 relative">
           <Image
@@ -113,55 +126,53 @@ export const UserListCard: React.FC<UserListCardProps> = ({
             }}
           />
         </div>
-      <div className="w-2/3 flex flex-col justify-center">
-        <DSInput
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={() => setIsInputFocused(true)}
-          onBlur={() => setIsInputFocused(false)}
-          placeholder={`Nickname for ${member.username}`}
-          className={styles.nicknameInput}
-          disabled={isUpdating}
-        />
-        <div className={styles.username}>
-          {member.username}{member.userTag}
+        <div className="w-2/3 flex flex-col justify-center">
+          <DSInput
+            value={inputValue}
+            onChange={handleInputChange}
+            onFocus={() => setIsInputFocused(true)}
+            onBlur={() => setIsInputFocused(false)}
+            placeholder={`Nickname for ${member.username}`}
+            className={styles.nicknameInput}
+            disabled={isUpdating}
+          />
+          <div className={styles.username}>
+            {member.username}{member.userTag}
+          </div>
         </div>
-      </div>
 
-      <div className="flex flex-col space-y-2">
-        <DSButton
-          onClick={onApplyNickname}
-          disabled={isUpdating || !inputValue}
-          className={`${styles.applyButton} ${
-            isUpdating ? 'motion-preset-pop motion-duration-1000' : ''
-          }`}
+        <div className="flex flex-col space-y-2">
+          <DSButton
+            onClick={handleApplyNickname}
+            disabled={isUpdating || !inputValue}
+            className={`${styles.applyButton} ${
+              isUpdating ? 'motion-preset-pop motion-duration-1000' : ''
+            }`}
+          >
+            {isUpdating ? 'Applying...' : 'Apply'}
+          </DSButton>
+          <DSButton
+            onClick={handleRevert}
+            disabled={isUpdating}
+            className={`${styles.applyButton} active:bg-red-400`}
+          >
+            Revert
+          </DSButton>
+        </div>
+
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="p-2 hover:bg-neutral-700 transition-all cursor-pointer rounded-lg"
         >
-          {isUpdating ? 'Applying...' : 'Apply'}
-        </DSButton>
-        <DSButton
-          onClick={handleRevert}
-          disabled={isUpdating}
-          className={`${styles.applyButton} active:bg-red-400`}
-        >
-          Revert
-        </DSButton>
+          <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
+            {isExpanded ? (
+              <ChevronUp className="w-5 h-5 text-neutral-500" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-neutral-500" />
+            )}
+          </motion.div>
+        </button>
       </div>
-
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="p-2 hover:bg-neutral-700 transition-all cursor-pointer rounded-lg"
-      >
-        <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
-          {isExpanded ? (
-            <ChevronUp className="w-5 h-5 text-neutral-500" />
-          ) : (
-            <ChevronDown className="w-5 h-5 text-neutral-500" />
-          )}
-        </motion.div>
-      </button>
-    </div>
-
-
 
       <AnimatePresence>
         {isExpanded && (
@@ -224,7 +235,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         onConfirm={confirmDeleteNickname}
         onCancel={cancelDeleteNickname}
       />
-    </div>
+    </motion.div>
   );
 };
 

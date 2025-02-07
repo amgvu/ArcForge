@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { UserListCard } from "../UserListCard/UserListCard";
 import { styles } from "./UserList.styles";
 import { Member } from "@/types/types";
+import { useState, useEffect } from "react";
 
 interface UserListProps {
   members: Member[];
@@ -9,6 +10,7 @@ interface UserListProps {
   selectedServer: string;
   onNicknameChange: (index: number, nickname: string) => void;
   onApplyNickname: (userId: string, nickname: string) => void;
+  isApplyingAll: boolean;
 }
 
 const roleGroupVariants = {
@@ -23,16 +25,16 @@ const roleGroupVariants = {
   }),
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: -50 },
-  visible: (index: number) => ({
-    opacity: 1,
-    y: 0,
+const shiftVariants = {
+  initial: { y: 0 },
+  animate: (index: number) => ({
+    y: [0, 15, 0],
     transition: {
-      delay: index * 0.1,
-      duration: 0.4,
-    },
-  }),
+      duration: 0.35,
+      ease: [0.25, 0.1, 0.25, 1],
+      delay: index * 0.06, 
+    }
+  })
 };
 
 export const DSUserList: React.FC<UserListProps> = ({
@@ -41,7 +43,16 @@ export const DSUserList: React.FC<UserListProps> = ({
   selectedServer,
   onNicknameChange,
   onApplyNickname,
+  isApplyingAll
 }) => {
+  const [animationKey, setAnimationKey] = useState(0);
+
+  useEffect(() => {
+    if (isApplyingAll) {
+      setAnimationKey(prev => prev + 1);
+    }
+  }, [isApplyingAll]);
+
   const groupedMembers = members.reduce((acc: Record<string, Member[]>, member) => {
     const highestRole = member.roles[0]?.name || "No Role";
     if (!acc[highestRole]) {
@@ -50,8 +61,6 @@ export const DSUserList: React.FC<UserListProps> = ({
     acc[highestRole].push(member);
     return acc;
   }, {});
-
-  console.log(selectedServer)
 
   const sortedRoles = Object.keys(groupedMembers).sort((a, b) => {
     const roleAPosition = members.find((m) => m.roles[0]?.name === a)?.roles[0]?.position ?? -1;
@@ -75,12 +84,12 @@ export const DSUserList: React.FC<UserListProps> = ({
             </div>
             {groupedMembers[roleName].map((member, memberIndex) => (
               <motion.div
-                key={`${member.user_id}`} 
+                key={`${member.user_id}-${animationKey}`}
                 className="mb-4"
                 custom={memberIndex}
-                initial="hidden"
-                animate="visible"
-                variants={itemVariants}
+                initial="initial"
+                animate={isApplyingAll ? "animate" : "initial"}
+                variants={shiftVariants}
               >
                 <UserListCard
                   member={member}

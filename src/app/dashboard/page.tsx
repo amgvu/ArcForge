@@ -255,6 +255,8 @@ export default function Dashboard() {
                       isUpdating={isUpdating}
                       onNicknameChange={handleNicknameChange}
                       onApplyNickname={(userId: string, nickname: string) => handleUpdateNickname(userId, nickname, true)}
+                      isApplyingAll={isApplyingAll}
+                      
                     />
                   ) : (
                     <div className="text-center font-semibold text-4xl text-neutral-500 py-5">
