@@ -99,8 +99,8 @@ export const UserListCard: React.FC<UserListCardProps> = ({
 
   const handleApplyNickname = async () => {
     await controls.start({
-      y: [0, 150, 0],
-      transition: { duration: 0.2, ease: "easeOut" },
+      y: [0, 350, 0],
+      transition: { duration: 0.1, ease: "easeOut" },
     });
     onApplyNickname();
   };
