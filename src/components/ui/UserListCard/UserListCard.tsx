@@ -162,7 +162,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
 
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 hover:bg-neutral-700 transition-all cursor-pointer rounded-lg"
+          className="p-2 hover:bg-neutral-600 transition-all cursor-pointer rounded-lg"
         >
           <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
             {isExpanded ? (

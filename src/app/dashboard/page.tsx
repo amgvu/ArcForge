@@ -102,20 +102,24 @@ export default function Dashboard() {
 
   const handleUpdateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
     try {
-      setIsUpdating(userId);
+      const fetchedMember = fetchedMembers.find((m) => m.user_id === userId);
       
-      await updateNickname(selectedServer, userId, nickname);
+      if (!fetchedMember || fetchedMember.nickname !== nickname) {
+        setIsUpdating(userId);
+        
+        await updateNickname(selectedServer, userId, nickname);
 
-      if (saveToDb) {
-        const member = members.find((m: Member) => m.user_id === userId);
-        if (member) {
-          await saveNicknames(selectedServer, [
-            {
-              userId: member.user_id,
-              nickname: member.nickname,
-              userTag: member.username
-            },
-          ]);
+        if (saveToDb) {
+          const member = members.find((m: Member) => m.user_id === userId);
+          if (member) {
+            await saveNicknames(selectedServer, [
+              {
+                userId: member.user_id,
+                nickname: member.nickname,
+                userTag: member.username
+              },
+            ]);
+          }
         }
       }
     } catch (err) {
