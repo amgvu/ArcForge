@@ -3,7 +3,7 @@
 import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList, DSCreateMenu, DSInput } from "@/components";
-import { useServers, useMembers } from "@/lib/hooks";
+import { useServers, useMembers} from "@/lib/hooks";
 import { updateNickname, saveNicknames } from "@/lib/utilities";
 import { characterGen } from "@/lib/utilities/gemini/characters"
 import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
@@ -12,6 +12,7 @@ import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, delet
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const { servers, error: serversError } = useServers();
+
   const [selectedServer, setSelectedServer] = useState('');
   const [selectedArc, setSelectedArc] = useState<Arc | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);

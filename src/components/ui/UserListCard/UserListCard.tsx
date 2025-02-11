@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { DSInput, DSButton, DSDialog } from '@/components/';
 import { styles } from './UserListCard.styles';
 import { Member, Nickname } from '@/types/types';
@@ -115,12 +115,13 @@ export const UserListCard: React.FC<UserListCardProps> = ({
       <div className="absolute inset-0 bg-black/5"></div>
       <div className="flex items-center space-x-4 relative z-10">
         <div className="w-1/3 h-full flex-shrink-0 relative">
-          <Image
+          <img
             src={member.avatar_url}
             alt={`${member.username}'s avatar`}
             width={128}
             height={128}
             className={styles.avatar}
+            loading="lazy"
             onError={(e) => {
               e.currentTarget.src = '/default-avatar.png';
             }}
