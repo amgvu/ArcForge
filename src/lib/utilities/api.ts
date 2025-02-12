@@ -1,11 +1,14 @@
 import { Server, Arc, ArcNickname, Nickname } from "@/types/types";
 import { supabase } from "../supabase";
 
-export const fetchServers = async (accessToken: string, userId: string): Promise<Server[]> => {
-  const response = await fetch('http://localhost:3000/api/servers', {
-    method: 'POST',
+export const fetchServers = async (
+  accessToken: string,
+  userId: string
+): Promise<Server[]> => {
+  const response = await fetch("http://localhost:3000/api/servers", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       accessToken,
@@ -15,7 +18,9 @@ export const fetchServers = async (accessToken: string, userId: string): Promise
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(`Failed to fetch servers: ${errorData.error || response.statusText}`);
+    throw new Error(
+      `Failed to fetch servers: ${errorData.error || response.statusText}`
+    );
   }
 
   return response.json();
@@ -24,18 +29,22 @@ export const fetchServers = async (accessToken: string, userId: string): Promise
 export const fetchMembers = async (guildId: string) => {
   const response = await fetch(`http://localhost:3000/api/members/${guildId}`);
   if (!response.ok) {
-    throw new Error('Failed to fetch members');
+    throw new Error("Failed to fetch members");
   }
   return response.json();
 };
 
 ///////////////////////CRUD OPERATIONS FOR NICKNAMES///////////////////////
 
-export const updateNickname = async (guildId: string, userId: string, nickname: string) => {
-  const response = await fetch('http://localhost:3000/api/changeNickname', {
-    method: 'POST',
+export const updateNickname = async (
+  guildId: string,
+  userId: string,
+  nickname: string
+) => {
+  const response = await fetch("http://localhost:3000/api/changeNickname", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       guild_id: guildId,
@@ -47,35 +56,43 @@ export const updateNickname = async (guildId: string, userId: string, nickname: 
   if (!response.ok) {
     const errorData = await response.json();
     if (response.status === 403 && errorData.code === 50013) {
-      throw new Error('Cannot change nickname of server owner or users with higher roles');
+      throw new Error(
+        "Cannot change nickname of server owner or users with higher roles"
+      );
     }
-    throw new Error(errorData.message || 'Failed to update nickname');
+    throw new Error(errorData.message || "Failed to update nickname");
   }
 
   return response.json();
 };
 
-export const fetchNicknames = async (guild_id: string, userId: string): Promise<Nickname[]> => {
+export const fetchNicknames = async (
+  guild_id: string,
+  userId: string
+): Promise<Nickname[]> => {
   try {
     const { data, error } = await supabase
-      .from('nicknames')
-      .select('*')
-      .eq('guild_id', guild_id)
-      .eq('user_id', userId)
-      .order('updated_at', { ascending: false });
+      .from("nicknames")
+      .select("*")
+      .eq("guild_id", guild_id)
+      .eq("user_id", userId)
+      .order("updated_at", { ascending: false });
 
     if (error) {
-      console.error('Supabase error:', error);
+      console.error("Supabase error:", error);
       throw new Error(`Failed to fetch nicknames: ${error.message}`);
     }
     return data || [];
   } catch (err) {
-    console.error('Unexpected error in fetchNicknames:', err);
+    console.error("Unexpected error in fetchNicknames:", err);
     throw err;
   }
 };
 
-export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Promise<{
+export const saveNicknames = async (
+  guildId: string,
+  nicknames: Nickname[]
+): Promise<{
   message: string;
   savedNicknames: Array<{
     guild_id: string;
@@ -93,72 +110,78 @@ export const saveNicknames = async (guildId: string, nicknames: Nickname[]): Pro
     nickname: string;
     updated_at: string;
     is_active: boolean;
-  }[] = nicknames.map(n => ({
+  }[] = nicknames.map((n) => ({
     guild_id: guildId,
     user_id: n.userId,
-    user_tag: n.userTag || '',
+    user_tag: n.userTag || "",
     nickname: n.nickname.trim(),
     updated_at: new Date().toISOString(),
-    is_active: true
+    is_active: true,
   }));
 
-  const upsertResults = await Promise.all(validNicknames.map(async (nickname) => {
-    const { data: existingNicknames, error: fetchError } = await supabase
-      .from("nicknames")
-      .select("*")
-      .eq("guild_id", nickname.guild_id)
-      .eq("user_id", nickname.user_id)
-      .eq("nickname", nickname.nickname)
-      .maybeSingle();
+  const upsertResults = await Promise.all(
+    validNicknames.map(async (nickname) => {
+      const { data: existingNicknames, error: fetchError } = await supabase
+        .from("nicknames")
+        .select("*")
+        .eq("guild_id", nickname.guild_id)
+        .eq("user_id", nickname.user_id)
+        .eq("nickname", nickname.nickname)
+        .maybeSingle();
 
-    if (fetchError) {
-      console.error("Error checking existing nickname:", fetchError);
-      return null;
-    }
+      if (fetchError) {
+        console.error("Error checking existing nickname:", fetchError);
+        return null;
+      }
 
-    if (existingNicknames) {
-      return existingNicknames;
-    }
+      if (existingNicknames) {
+        return existingNicknames;
+      }
 
-    await supabase
-      .from("nicknames")
-      .update({ is_active: false })
-      .eq("guild_id", nickname.guild_id)
-      .eq("user_id", nickname.user_id)
-      .eq("is_active", true);
+      await supabase
+        .from("nicknames")
+        .update({ is_active: false })
+        .eq("guild_id", nickname.guild_id)
+        .eq("user_id", nickname.user_id)
+        .eq("is_active", true);
 
-    const { data, error } = await supabase
-      .from("nicknames")
-      .insert(nickname)
-      .select();
+      const { data, error } = await supabase
+        .from("nicknames")
+        .insert(nickname)
+        .select();
 
-    if (error) {
-      console.error("Error saving nickname:", error);
-      return null;
-    }
+      if (error) {
+        console.error("Error saving nickname:", error);
+        return null;
+      }
 
-    return data[0];
-  }));
+      return data[0];
+    })
+  );
 
-  const savedNicknames = upsertResults.filter(result => result !== null);
+  const savedNicknames = upsertResults.filter((result) => result !== null);
 
   if (savedNicknames.length === 0) {
     throw new Error("Failed to save any nicknames.");
   }
 
-  return { 
-    message: "Nicknames processed successfully.", 
-    savedNicknames: savedNicknames 
+  return {
+    message: "Nicknames processed successfully.",
+    savedNicknames: savedNicknames,
   };
 };
 
-export const deleteNickname = async (guildId: string, userId: string, nickname: string): Promise<void> => {
+export const deleteNickname = async (
+  guildId: string,
+  userId: string,
+  nickname: string
+): Promise<void> => {
   const { error } = await supabase
-    .from('nicknames')
+    .from("nicknames")
     .delete()
-    .eq('guild_id', guildId)
-    .eq('user_id', userId)
-    .eq('nickname', nickname);
+    .eq("guild_id", guildId)
+    .eq("user_id", userId)
+    .eq("nickname", nickname);
 
   if (error) {
     throw new Error(`Failed to delete nickname: ${error.message}`);
@@ -167,9 +190,12 @@ export const deleteNickname = async (guildId: string, userId: string, nickname: 
 
 ///////////////////////CRUD OPERATIONS FOR ARCS///////////////////////
 
-export const createArc = async (guildId: string, arcName: string): Promise<Arc> => {
+export const createArc = async (
+  guildId: string,
+  arcName: string
+): Promise<Arc> => {
   const { data, error } = await supabase
-    .from('arcs')
+    .from("arcs")
     .insert([{ guild_id: guildId, arc_name: arcName }])
     .select()
     .single();
@@ -182,10 +208,7 @@ export const createArc = async (guildId: string, arcName: string): Promise<Arc> 
 };
 
 export const deleteArc = async (arcId: number): Promise<void> => {
-  const { error } = await supabase
-    .from('arcs')
-    .delete()
-    .eq('id', arcId);
+  const { error } = await supabase.from("arcs").delete().eq("id", arcId);
 
   if (error) {
     throw new Error(`Failed to delete arc: ${error.message}`);
@@ -194,9 +217,9 @@ export const deleteArc = async (arcId: number): Promise<void> => {
 
 export const fetchArcs = async (guild_id: string): Promise<Arc[]> => {
   const { data, error } = await supabase
-    .from('arcs')
-    .select('*')
-    .eq('guild_id', guild_id);
+    .from("arcs")
+    .select("*")
+    .eq("guild_id", guild_id);
 
   if (error) {
     throw new Error(error.message);
@@ -205,42 +228,49 @@ export const fetchArcs = async (guild_id: string): Promise<Arc[]> => {
   return data;
 };
 
-export const saveArcNicknames = async (arcNicknames: ArcNickname[]): Promise<void> => {
-  const { error } = await supabase
-    .from('arc_nicknames')
-    .insert(arcNicknames.map((nickname) => ({
+export const saveArcNicknames = async (
+  arcNicknames: ArcNickname[]
+): Promise<void> => {
+  const { error } = await supabase.from("arc_nicknames").insert(
+    arcNicknames.map((nickname) => ({
       arc_id: nickname.arc_id,
       guild_id: nickname.guild_id,
       user_id: nickname.user_id,
       nickname: nickname.nickname,
       user_tag: nickname.userTag,
-    })));
+    }))
+  );
 
   if (error) {
     throw new Error(error.message);
   }
 };
 
-export const checkExistingArc = async (guildId: string, arcName: string): Promise<Arc | null> => {
+export const checkExistingArc = async (
+  guildId: string,
+  arcName: string
+): Promise<Arc | null> => {
   const { data, error } = await supabase
-    .from('arcs')
-    .select('*')
-    .eq('guild_id', guildId)
-    .eq('arc_name', arcName)
+    .from("arcs")
+    .select("*")
+    .eq("guild_id", guildId)
+    .eq("arc_name", arcName)
     .single();
 
-  if (error && error.code !== 'PGRST116') {
+  if (error && error.code !== "PGRST116") {
     throw new Error(error.message);
   }
 
   return data;
 };
 
-export const fetchArcNicknames = async (arcId: number): Promise<ArcNickname[]> => {
+export const fetchArcNicknames = async (
+  arcId: number
+): Promise<ArcNickname[]> => {
   const { data, error } = await supabase
-    .from('arc_nicknames')
-    .select('*')
-    .eq('arc_id', arcId);
+    .from("arc_nicknames")
+    .select("*")
+    .eq("arc_id", arcId);
 
   if (error) {
     throw new Error(error.message);
@@ -251,16 +281,19 @@ export const fetchArcNicknames = async (arcId: number): Promise<ArcNickname[]> =
 
 export const deleteArcNicknames = async (arcId: number): Promise<void> => {
   const { error } = await supabase
-    .from('arc_nicknames')
+    .from("arc_nicknames")
     .delete()
-    .eq('arc_id', arcId);
+    .eq("arc_id", arcId);
 
   if (error) {
     throw new Error(error.message);
   }
 };
 
-const compareNicknames = (nicknames1: ArcNickname[], nicknames2: ArcNickname[]): boolean => {
+const compareNicknames = (
+  nicknames1: ArcNickname[],
+  nicknames2: ArcNickname[]
+): boolean => {
   if (nicknames1.length !== nicknames2.length) {
     return false;
   }
@@ -285,9 +318,9 @@ export const checkDuplicateArcNicknames = async (
   newNicknames: ArcNickname[]
 ): Promise<boolean> => {
   const { data: arcs, error: arcsError } = await supabase
-    .from('arcs')
-    .select('id')
-    .eq('guild_id', guildId);
+    .from("arcs")
+    .select("id")
+    .eq("guild_id", guildId);
 
   if (arcsError) {
     throw new Error(arcsError.message);
