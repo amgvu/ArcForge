@@ -1,17 +1,16 @@
 "use client";
 
-import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList, DSCreateMenu, DSInput } from "@/components";
-import { useServers, useMembers} from "@/lib/hooks";
+import { useServers, useMembers, useAuth } from "@/lib/hooks";
 import { updateNickname, saveNicknames } from "@/lib/utilities";
 import { characterGen } from "@/lib/utilities/gemini/characters"
 import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
 import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utilities/api";
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
   const { servers, error: serversError } = useServers();
+  const { session, status } = useAuth();
 
   const [selectedServer, setSelectedServer] = useState('');
   const [selectedArc, setSelectedArc] = useState<Arc | null>(null);
@@ -30,12 +29,6 @@ export default function Dashboard() {
   useEffect(() => {
     setIsLoaded(true);
   }, []);
-
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      signIn('discord');
-    }
-  }, [status]);
 
   useEffect(() => {
     if (fetchedMembers) {
@@ -227,6 +220,10 @@ export default function Dashboard() {
       alert('Failed to create new arc. Please try again.');
     }
   };
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   if (status === 'loading') {
     return <div>Loading...</div>;
