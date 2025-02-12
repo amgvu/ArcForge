@@ -2,23 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList, DSCreateMenu, DSInput } from "@/components";
-import { useServers, useMembers, useAuth } from "@/lib/hooks";
+import { useServerSelection, useMembers, useAuth } from "@/lib/hooks";
 import { updateNickname, saveNicknames } from "@/lib/utilities";
 import { characterGen } from "@/lib/utilities/gemini/characters"
 import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
 import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utilities/api";
 
 export default function Dashboard() {
-  const { servers, error: serversError } = useServers();
   const { session, status } = useAuth();
+  const { 
+    servers, 
+    serversError, 
+    selectedServer, 
+    selectedServerName, 
+    handleServerSelection 
+  } = useServerSelection();
 
-  const [selectedServer, setSelectedServer] = useState('');
   const [selectedArc, setSelectedArc] = useState<Arc | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
   const [isSavingArc, setIsSavingArc] = useState(false);
-  const [selectedServerName, setSelectedServerName] = useState<string>('');
   const { members: fetchedMembers, error: membersError } = useMembers(selectedServer);
   const [members, setMembers] = useState<Member[]>([]);
   const [theme, setTheme] = useState<string>("");
@@ -286,19 +290,10 @@ export default function Dashboard() {
               <div className="rounded-md">
                 <label className="block text-lg font-medium mb-3">My Servers</label>
                 <DSMenu
-                  items={servers.map((server: { name: string }) => server.name)}
+                  items={servers.map((server) => server.name)}
                   placeholder="Select a server"
                   selectedItem={selectedServerName}
-                  setSelectedItem={(value: string) => {
-                    const selected = servers.find((server: { name: string; id: string }) => server.name === value);
-                    if (selected) {
-                      setSelectedServerName(selected.name);
-                      setSelectedServer(selected.id);
-                    } else {
-                      setSelectedServerName('');
-                      setSelectedServer('');
-                    }
-                  }}
+                  setSelectedItem={handleServerSelection}
                 />
               </div>
               <div className="rounded-md">
