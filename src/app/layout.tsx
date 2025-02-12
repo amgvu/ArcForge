@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import ClientProvider from '@/components/ClientProvider'
+import ClientProvider from "@/components/ClientProvider";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar/Sidebar";
 
@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} w-full h-full bg-neutral-900`}
       >
         <ClientProvider>
-        <Sidebar>{children}</Sidebar>
+          <Sidebar>{children}</Sidebar>
         </ClientProvider>
       </body>
     </html>

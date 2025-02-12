@@ -1,5 +1,5 @@
-import NextAuth from 'next-auth';
-import DiscordProvider from 'next-auth/providers/discord';
+import NextAuth from "next-auth";
+import DiscordProvider from "next-auth/providers/discord";
 
 interface DiscordProfile {
   id: string;
@@ -17,7 +17,7 @@ const handler = NextAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'identify guilds',
+          scope: "identify guilds",
         },
       },
     }),
@@ -39,7 +39,7 @@ const handler = NextAuth({
     },
   },
   pages: {
-    error: '/api/auth/error',
+    error: "/api/auth/error",
   },
   secret: process.env.NEXTAUTH_SECRET!,
 });

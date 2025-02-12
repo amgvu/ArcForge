@@ -30,7 +30,9 @@ export default function Home() {
           </TextEffect>
 
           <div
-            className={`transition-opacity font-semibold duration-1000 ${showTextLoop ? "opacity-100" : "opacity-0"}`}
+            className={`transition-opacity font-semibold duration-1000 ${
+              showTextLoop ? "opacity-100" : "opacity-0"
+            }`}
           >
             <TextLoop
               className="overflow-y-clip text-3xl"
