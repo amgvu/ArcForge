@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from 'react';
-import { DSInput, DSButton, DSDialog } from '@/components/';
-import { styles } from './UserListCard.styles';
-import { Member, Nickname } from '@/types/types';
-import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import { ChevronDown, ChevronUp, X } from 'lucide-react';
-import { fetchNicknames, deleteNickname } from '@/lib/utilities/api';
+import React, { useEffect, useState } from "react";
+import { DSInput, DSButton, DSDialog } from "@/components/";
+import { styles } from "./UserListCard.styles";
+import { Member, Nickname } from "@/types/types";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import { ChevronDown, ChevronUp, X } from "lucide-react";
+import { fetchNicknames, deleteNickname } from "@/lib/utilities/api";
 
 interface UserListCardProps {
   member: Member;
@@ -22,19 +22,23 @@ export const UserListCard: React.FC<UserListCardProps> = ({
   onNicknameChange,
   onApplyNickname,
 }) => {
-  const [inputValue, setInputValue] = useState(member.nickname || member.globalName || '');
+  const [inputValue, setInputValue] = useState(
+    member.nickname || member.globalName || ""
+  );
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [previousNicknames, setPreviousNicknames] = useState<Nickname[]>([]);
   const [isLoadingNicknames, setIsLoadingNicknames] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isPromptOpen, setIsPromptOpen] = useState(false);
-  const [nicknameToDelete, setNicknameToDelete] = useState<Nickname | null>(null);
+  const [nicknameToDelete, setNicknameToDelete] = useState<Nickname | null>(
+    null
+  );
   const controls = useAnimation();
 
   useEffect(() => {
     if (!isInputFocused) {
-      setInputValue(member.nickname || member.globalName || '');
+      setInputValue(member.nickname || member.globalName || "");
     }
   }, [member.nickname, member.globalName, isInputFocused]);
 
@@ -44,11 +48,16 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         setIsLoadingNicknames(true);
         setFetchError(null);
         try {
-          const nicknames = await fetchNicknames(selectedServer, member.user_id);
+          const nicknames = await fetchNicknames(
+            selectedServer,
+            member.user_id
+          );
           setPreviousNicknames(nicknames);
         } catch (error) {
-          console.error('Failed to fetch nicknames:', error);
-          setFetchError('Unable to fetch previous nicknames. Please try again.');
+          console.error("Failed to fetch nicknames:", error);
+          setFetchError(
+            "Unable to fetch previous nicknames. Please try again."
+          );
         } finally {
           setIsLoadingNicknames(false);
         }
@@ -64,13 +73,13 @@ export const UserListCard: React.FC<UserListCardProps> = ({
   };
 
   const handleRevert = () => {
-    const globalName = member.globalName || '';
+    const globalName = member.globalName || "";
     setInputValue(globalName);
     onNicknameChange(globalName);
   };
 
   const handleDeleteNickname = (nickname: Nickname) => {
-    setNicknameToDelete(nickname); 
+    setNicknameToDelete(nickname);
     setIsPromptOpen(true);
   };
 
@@ -78,12 +87,14 @@ export const UserListCard: React.FC<UserListCardProps> = ({
     if (nicknameToDelete && selectedServer && member.user_id) {
       deleteNickname(selectedServer, member.user_id, nicknameToDelete.nickname)
         .then(() => {
-          setPreviousNicknames(prevNicknames =>
-            prevNicknames.filter(nick => nick.nickname !== nicknameToDelete.nickname)
+          setPreviousNicknames((prevNicknames) =>
+            prevNicknames.filter(
+              (nick) => nick.nickname !== nicknameToDelete.nickname
+            )
           );
         })
-        .catch(error => {
-          console.error('Error deleting nickname:', error);
+        .catch((error) => {
+          console.error("Error deleting nickname:", error);
         })
         .finally(() => {
           setIsPromptOpen(false);
@@ -93,7 +104,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
   };
 
   const cancelDeleteNickname = () => {
-    setIsPromptOpen(false); 
+    setIsPromptOpen(false);
     setNicknameToDelete(null);
   };
 
@@ -123,7 +134,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
             className={styles.avatar}
             loading="lazy"
             onError={(e) => {
-              e.currentTarget.src = '/default-avatar.png';
+              e.currentTarget.src = "/default-avatar.png";
             }}
           />
         </div>
@@ -138,7 +149,8 @@ export const UserListCard: React.FC<UserListCardProps> = ({
             disabled={isUpdating}
           />
           <div className={styles.username}>
-            {member.username}{member.userTag}
+            {member.username}
+            {member.userTag}
           </div>
         </div>
 
@@ -147,10 +159,10 @@ export const UserListCard: React.FC<UserListCardProps> = ({
             onClick={handleApplyNickname}
             disabled={isUpdating || !inputValue}
             className={`${styles.applyButton} ${
-              isUpdating ? 'motion-preset-pop motion-duration-1000' : ''
+              isUpdating ? "motion-preset-pop motion-duration-1000" : ""
             }`}
           >
-            {isUpdating ? 'Applying...' : 'Apply'}
+            {isUpdating ? "Applying..." : "Apply"}
           </DSButton>
           <DSButton
             onClick={handleRevert}
@@ -179,7 +191,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
         {isExpanded && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
@@ -189,7 +201,9 @@ export const UserListCard: React.FC<UserListCardProps> = ({
                 Saved Nicknames
               </div>
               {isLoadingNicknames ? (
-                <div className="text-neutral-400 text-xs">Loading nicknames...</div>
+                <div className="text-neutral-400 text-xs">
+                  Loading nicknames...
+                </div>
               ) : fetchError ? (
                 <div className="text-red-400">{fetchError}</div>
               ) : (
@@ -241,4 +255,3 @@ export const UserListCard: React.FC<UserListCardProps> = ({
 };
 
 export default UserListCard;
-
