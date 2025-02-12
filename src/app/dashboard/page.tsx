@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { DSButton, DSMenu, DSUserList, DSCreateMenu, DSInput } from "@/components";
-import { useServerSelection, useMembers, useAuth } from "@/lib/hooks";
+import { useServerSelection, useMembers, useArcManagement, useAuth } from "@/lib/hooks";
 import { updateNickname, saveNicknames } from "@/lib/utilities";
 import { characterGen } from "@/lib/utilities/gemini/characters"
-import { ArcNickname, Arc, Nickname, Member  } from "@/types/types";
-import { createArc, saveArcNicknames, fetchArcNicknames, checkExistingArc, deleteArcNicknames } from "@/lib/utilities/api";
+import { Nickname, Member  } from "@/types/types";
+import { fetchArcNicknames } from "@/lib/utilities/api";
 
 export default function Dashboard() {
   const { session, status } = useAuth();
@@ -18,17 +18,23 @@ export default function Dashboard() {
     handleServerSelection 
   } = useServerSelection();
 
-  const [selectedArc, setSelectedArc] = useState<Arc | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
-  const [isSavingArc, setIsSavingArc] = useState(false);
   const { members: fetchedMembers, error: membersError } = useMembers(selectedServer);
   const [members, setMembers] = useState<Member[]>([]);
   const [theme, setTheme] = useState<string>("");
   const [generatedThemes, setGeneratedThemes] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [previousNicknames, setPreviousNicknames] = useState<Record<string, string>>({});
+
+  const {
+    selectedArc,
+    setSelectedArc,
+    isSavingArc,
+    handleSaveArc,
+    handleCreateNewArc
+  } = useArcManagement(selectedServer, members);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -162,67 +168,6 @@ export default function Dashboard() {
     const updatedMembers = [...members];
     updatedMembers[index] = { ...updatedMembers[index], nickname };
     setMembers(updatedMembers);
-  };
-
-  const handleSaveArc = async () => {
-    if (!selectedServer || !selectedArc || !selectedArc.arc_name) {
-      alert('Please select a server, arc, and ensure members are loaded.');
-      return;
-    }
-  
-    setIsSavingArc(true);
-  
-    try {
-      const existingArc = await checkExistingArc(selectedServer, selectedArc.arc_name);
-  
-      if (existingArc) {
-        const confirmOverwrite = window.confirm(
-          'An arc with this name already exists. Do you want to overwrite it with the new set of nicknames?'
-        );
-  
-        if (!confirmOverwrite) {
-          return;
-        }
-  
-        await deleteArcNicknames(existingArc.id);
-      }
-  
-      const arc = existingArc || (await createArc(selectedServer, selectedArc.arc_name));
-  
-      const newNicknames: ArcNickname[] = members.map((member) => {
-        if (!member.userTag && !member.username) {
-          throw new Error(`User tag and username are missing for user ${member.user_id}`);
-        }
-  
-        return {
-          arc_id: arc.id!,
-          guild_id: selectedServer,
-          user_id: member.user_id,
-          nickname: member.nickname,
-          userTag: member.userTag || member.username,
-        };
-      });
-  
-      await saveArcNicknames(newNicknames);
-  
-      alert('Arc saved successfully!');
-    } catch (error) {
-      console.error(error);
-      alert('Failed to save arc. Please try again.');
-    } finally {
-      setIsSavingArc(false);
-    }
-  };
-
-  const handleCreateNewArc = async (newArcName: string) => {
-    try {
-      const newArc = await createArc(selectedServer, newArcName);
-
-      setSelectedArc(newArc);
-    } catch (error) {
-      console.error('Failed to create new arc:', error);
-      alert('Failed to create new arc. Please try again.');
-    }
   };
 
   useEffect(() => {
