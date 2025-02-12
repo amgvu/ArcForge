@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Member, Nickname, Arc } from '@/types/types';
-import { useMembers } from '@/lib/hooks';
+import { Member, Nickname } from '@/types/types';
 import { updateNickname, saveNicknames } from '@/lib/utilities';
-import { fetchArcNicknames } from '@/lib/utilities/api';
 
-export const useMemberManagement = (selectedServer: string, selectedArc: Arc | null) => {
-  const { members: fetchedMembers, error: membersError } = useMembers(selectedServer);
+export const useMemberManagement = (selectedServer: string, fetchedMembers: Member[]) => {
   const [members, setMembers] = useState<Member[]>([]);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
@@ -17,27 +14,11 @@ export const useMemberManagement = (selectedServer: string, selectedArc: Arc | n
     }
   }, [fetchedMembers]);
 
-  useEffect(() => {
-    const loadArcNicknames = async () => {
-      if (selectedArc) {
-        try {
-          const arcNicknames = await fetchArcNicknames(selectedArc.id);
-          setMembers((currentMembers) =>
-            currentMembers.map((member) => {
-              const arcNickname = arcNicknames.find((an) => an.user_id === member.user_id);
-              return arcNickname
-                ? { ...member, nickname: arcNickname.nickname }
-                : member;
-            })
-          );
-        } catch (error) {
-          console.error('Failed to fetch arc nicknames:', error);
-        }
-      }
-    };
-
-    loadArcNicknames();
-  }, [selectedArc]);
+  const handleNicknameChange = (index: number, nickname: string) => {
+    const updatedMembers = [...members];
+    updatedMembers[index] = { ...updatedMembers[index], nickname };
+    setMembers(updatedMembers);
+  };
 
   const handleUpdateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
     try {
@@ -58,13 +39,11 @@ export const useMemberManagement = (selectedServer: string, selectedArc: Arc | n
         if (saveToDb) {
           const member = members.find((m: Member) => m.user_id === userId);
           if (member) {
-            await saveNicknames(selectedServer, [
-              {
-                userId: member.user_id,
-                nickname: member.nickname,
-                userTag: member.username
-              },
-            ]);
+            await saveNicknames(selectedServer, [{
+              userId: member.user_id,
+              nickname: member.nickname,
+              userTag: member.username
+            }]);
           }
         }
       }
@@ -98,19 +77,13 @@ export const useMemberManagement = (selectedServer: string, selectedArc: Arc | n
     }
   };
 
-  const handleNicknameChange = (index: number, nickname: string) => {
-    const updatedMembers = [...members];
-    updatedMembers[index] = { ...updatedMembers[index], nickname };
-    setMembers(updatedMembers);
-  };
-
   return {
     members,
-    membersError,
+    setMembers,
     isUpdating,
     isApplyingAll,
-    handleUpdateNickname,
     handleNicknameChange,
+    handleUpdateNickname,
     applyAllNicknames
   };
 };
