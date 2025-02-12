@@ -9,9 +9,6 @@ export const useMemberManagement = (
   const [members, setMembers] = useState<Member[]>([]);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
-  const [previousNicknames, setPreviousNicknames] = useState<
-    Record<string, string>
-  >({});
 
   useEffect(() => {
     if (fetchedMembers) {
@@ -31,33 +28,20 @@ export const useMemberManagement = (
     saveToDb: boolean = true
   ) => {
     try {
-      const fetchedMember = fetchedMembers.find((m) => m.user_id === userId);
-      const previousNickname = previousNicknames[userId];
+      setIsUpdating(userId);
 
-      if (
-        (!fetchedMember || fetchedMember.nickname !== nickname) &&
-        (!previousNickname || previousNickname !== nickname)
-      ) {
-        setIsUpdating(userId);
+      await updateNickname(selectedServer, userId, nickname);
 
-        await updateNickname(selectedServer, userId, nickname);
-
-        setPreviousNicknames((prev) => ({
-          ...prev,
-          [userId]: nickname,
-        }));
-
-        if (saveToDb) {
-          const member = members.find((m: Member) => m.user_id === userId);
-          if (member) {
-            await saveNicknames(selectedServer, [
-              {
-                userId: member.user_id,
-                nickname: member.nickname,
-                userTag: member.username,
-              },
-            ]);
-          }
+      if (saveToDb) {
+        const member = members.find((m: Member) => m.user_id === userId);
+        if (member) {
+          await saveNicknames(selectedServer, [
+            {
+              userId: member.user_id,
+              nickname: member.nickname,
+              userTag: member.username,
+            },
+          ]);
         }
       }
     } catch (err) {
