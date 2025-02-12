@@ -17,7 +17,6 @@ import {
   useAuth,
 } from "@/lib/hooks";
 import { Member } from "@/types/types";
-import { fetchArcNicknames } from "@/lib/utilities/api";
 
 export default function Dashboard() {
   const { session, status } = useAuth();
@@ -52,36 +51,7 @@ export default function Dashboard() {
     isSavingArc,
     handleSaveArc,
     handleCreateNewArc,
-  } = useArcManagement(selectedServer, members);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    const loadArcNicknames = async () => {
-      if (selectedArc) {
-        try {
-          const arcNicknames = await fetchArcNicknames(selectedArc.id);
-
-          setMembers((currentMembers) =>
-            currentMembers.map((member) => {
-              const arcNickname = arcNicknames.find(
-                (an) => an.user_id === member.user_id
-              );
-              return arcNickname
-                ? { ...member, nickname: arcNickname.nickname }
-                : member;
-            })
-          );
-        } catch (error) {
-          console.error("Failed to fetch arc nicknames:", error);
-        }
-      }
-    };
-
-    loadArcNicknames();
-  }, [selectedArc]);
+  } = useArcManagement(selectedServer, members, setMembers);
 
   useEffect(() => {
     setIsLoaded(true);

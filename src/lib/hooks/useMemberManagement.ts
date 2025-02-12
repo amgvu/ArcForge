@@ -1,12 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Member, Nickname } from '@/types/types';
-import { updateNickname, saveNicknames } from '@/lib/utilities';
+import { useState, useEffect } from "react";
+import { Member, Nickname } from "@/types/types";
+import { updateNickname, saveNicknames } from "@/lib/utilities";
 
-export const useMemberManagement = (selectedServer: string, fetchedMembers: Member[]) => {
+export const useMemberManagement = (
+  selectedServer: string,
+  fetchedMembers: Member[]
+) => {
   const [members, setMembers] = useState<Member[]>([]);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [isApplyingAll, setIsApplyingAll] = useState(false);
-  const [previousNicknames, setPreviousNicknames] = useState<Record<string, string>>({});
+  const [previousNicknames, setPreviousNicknames] = useState<
+    Record<string, string>
+  >({});
 
   useEffect(() => {
     if (fetchedMembers) {
@@ -20,30 +25,38 @@ export const useMemberManagement = (selectedServer: string, fetchedMembers: Memb
     setMembers(updatedMembers);
   };
 
-  const handleUpdateNickname = async (userId: string, nickname: string, saveToDb: boolean = true) => {
+  const handleUpdateNickname = async (
+    userId: string,
+    nickname: string,
+    saveToDb: boolean = true
+  ) => {
     try {
       const fetchedMember = fetchedMembers.find((m) => m.user_id === userId);
       const previousNickname = previousNicknames[userId];
-      
-      if ((!fetchedMember || fetchedMember.nickname !== nickname) && 
-          (!previousNickname || previousNickname !== nickname)) {
+
+      if (
+        (!fetchedMember || fetchedMember.nickname !== nickname) &&
+        (!previousNickname || previousNickname !== nickname)
+      ) {
         setIsUpdating(userId);
-        
+
         await updateNickname(selectedServer, userId, nickname);
-        
-        setPreviousNicknames(prev => ({
+
+        setPreviousNicknames((prev) => ({
           ...prev,
-          [userId]: nickname
+          [userId]: nickname,
         }));
-  
+
         if (saveToDb) {
           const member = members.find((m: Member) => m.user_id === userId);
           if (member) {
-            await saveNicknames(selectedServer, [{
-              userId: member.user_id,
-              nickname: member.nickname,
-              userTag: member.username
-            }]);
+            await saveNicknames(selectedServer, [
+              {
+                userId: member.user_id,
+                nickname: member.nickname,
+                userTag: member.username,
+              },
+            ]);
           }
         }
       }
@@ -84,6 +97,6 @@ export const useMemberManagement = (selectedServer: string, fetchedMembers: Memb
     isApplyingAll,
     handleNicknameChange,
     handleUpdateNickname,
-    applyAllNicknames
+    applyAllNicknames,
   };
 };
