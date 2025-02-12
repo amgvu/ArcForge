@@ -1,6 +1,5 @@
-import { Button } from '@headlessui/react';
-import { buttonStyles } from './Button.styles';
-
+import { Button } from "@headlessui/react";
+import { buttonStyles } from "./Button.styles";
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -9,7 +8,12 @@ interface ButtonProps {
   className?: string;
 }
 
-const DSButton: React.FC<ButtonProps> = ({ children, onClick, disabled = false, className }) => {
+const DSButton: React.FC<ButtonProps> = ({
+  children,
+  onClick,
+  disabled = false,
+  className,
+}) => {
   return (
     <Button
       onClick={onClick}

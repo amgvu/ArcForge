@@ -1,7 +1,11 @@
-import { Fragment } from 'react';
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { menuButtonStyles, menuItemsStyles, menuItemStyles } from './Menu.styles';
+import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import {
+  menuButtonStyles,
+  menuItemsStyles,
+  menuItemStyles,
+} from "./Menu.styles";
 
 interface DSMenuProps {
   items: string[];
@@ -10,10 +14,10 @@ interface DSMenuProps {
   placeholder?: string;
 }
 
-const DSMenu: React.FC<DSMenuProps> = ({ 
-  items, 
-  selectedItem, 
-  setSelectedItem, 
+const DSMenu: React.FC<DSMenuProps> = ({
+  items,
+  selectedItem,
+  setSelectedItem,
   placeholder,
 }) => {
   const title = selectedItem || placeholder;
@@ -21,10 +25,11 @@ const DSMenu: React.FC<DSMenuProps> = ({
   return (
     <Menu as="div" className="relative w-full">
       <Menu.Button className={menuButtonStyles}>
-        <span className={!selectedItem ? 'text-zinc-400' : ''}>
-          {title}
-        </span>
-        <ChevronDownIcon className="h-5 w-5 cursor-pointer text-neutral-100" aria-hidden="true" />
+        <span className={!selectedItem ? "text-zinc-400" : ""}>{title}</span>
+        <ChevronDownIcon
+          className="h-5 w-5 cursor-pointer text-neutral-100"
+          aria-hidden="true"
+        />
       </Menu.Button>
       <Transition
         as={Fragment}

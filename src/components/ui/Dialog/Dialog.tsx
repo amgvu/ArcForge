@@ -1,6 +1,6 @@
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 interface DSDialogProps {
   isOpen: boolean;
@@ -10,11 +10,17 @@ interface DSDialogProps {
   onCancel: () => void;
 }
 
-export const DSDialog = ({ isOpen, title, message, onConfirm, onCancel }: DSDialogProps) => (
-  <Dialog 
-    open={isOpen} 
-    as="div" 
-    className="relative transition-all z-10 focus:outline-none" 
+export const DSDialog = ({
+  isOpen,
+  title,
+  message,
+  onConfirm,
+  onCancel,
+}: DSDialogProps) => (
+  <Dialog
+    open={isOpen}
+    as="div"
+    className="relative transition-all z-10 focus:outline-none"
     onClose={onCancel}
   >
     <motion.div
@@ -29,9 +35,7 @@ export const DSDialog = ({ isOpen, title, message, onConfirm, onCancel }: DSDial
           <DialogTitle as="h3" className="text-base/7 font-medium text-white">
             {title}
           </DialogTitle>
-          <div className="mt-2 text-sm/6 text-white/50">
-            {message}
-          </div>
+          <div className="mt-2 text-sm/6 text-white/50">{message}</div>
           <div className="mt-4 flex gap-3">
             <Button
               className="inline-flex cursor-pointer transition-all items-center gap-2 rounded-md bg-neutral-700 py-1.5 px-3 text-sm/6 font-semibold text-neutral-100 shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-neutral-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-neutral-700"
@@ -53,4 +57,3 @@ export const DSDialog = ({ isOpen, title, message, onConfirm, onCancel }: DSDial
 );
 
 export default DSDialog;
-

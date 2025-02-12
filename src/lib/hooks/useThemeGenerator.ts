@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from 'react';
-import { Member } from '@/types/types';
-import { characterGen } from '@/lib/utilities/gemini/characters';
+import { useState } from "react";
+import { Member } from "@/types/types";
+import { characterGen } from "@/lib/utilities/gemini/characters";
 
 export const useThemeGenerator = (
-  members: Member[], 
+  members: Member[],
   setMembers: (members: Member[]) => void
 ) => {
   const [theme, setTheme] = useState<string>("");
@@ -16,27 +16,26 @@ export const useThemeGenerator = (
       alert("No members found in the server. Please select a valid server.");
       return;
     }
-  
+
     if (!theme.trim()) {
       alert("Please enter a theme.");
       return;
     }
-  
+
     setLoading(true);
     try {
       const numCharacters = members.length;
       const characters = await characterGen(theme, numCharacters);
       setGeneratedThemes(characters);
-      
-      const generatedNames = characters.split(',').map(name => name.trim());
-      
+
+      const generatedNames = characters.split(",").map((name) => name.trim());
+
       const updatedMembers = members.map((member: Member, index: number) => ({
         ...member,
-        nickname: generatedNames[index] || member.nickname 
+        nickname: generatedNames[index] || member.nickname,
       }));
-      
-      setMembers(updatedMembers);
 
+      setMembers(updatedMembers);
     } catch (error) {
       console.error("Failed to generate themes:", error);
       alert("Failed to generate themes. Please try again.");
@@ -49,6 +48,6 @@ export const useThemeGenerator = (
     theme,
     setTheme,
     loading,
-    handleGenerateCharacters
+    handleGenerateCharacters,
   };
 };

@@ -32,9 +32,9 @@ const shiftVariants = {
     transition: {
       duration: 0.25,
       ease: [0.25, 0.1, 0.25, 1],
-      delay: index * 0.06, 
-    }
-  })
+      delay: index * 0.06,
+    },
+  }),
 };
 
 export const DSUserList: React.FC<UserListProps> = ({
@@ -43,28 +43,33 @@ export const DSUserList: React.FC<UserListProps> = ({
   selectedServer,
   onNicknameChange,
   onApplyNickname,
-  isApplyingAll
+  isApplyingAll,
 }) => {
   const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
     if (isApplyingAll) {
-      setAnimationKey(prev => prev + 1);
+      setAnimationKey((prev) => prev + 1);
     }
   }, [isApplyingAll]);
 
-  const groupedMembers = members.reduce((acc: Record<string, Member[]>, member) => {
-    const highestRole = member.roles[0]?.name || "No Role";
-    if (!acc[highestRole]) {
-      acc[highestRole] = [];
-    }
-    acc[highestRole].push(member);
-    return acc;
-  }, {});
+  const groupedMembers = members.reduce(
+    (acc: Record<string, Member[]>, member) => {
+      const highestRole = member.roles[0]?.name || "No Role";
+      if (!acc[highestRole]) {
+        acc[highestRole] = [];
+      }
+      acc[highestRole].push(member);
+      return acc;
+    },
+    {}
+  );
 
   const sortedRoles = Object.keys(groupedMembers).sort((a, b) => {
-    const roleAPosition = members.find((m) => m.roles[0]?.name === a)?.roles[0]?.position ?? -1;
-    const roleBPosition = members.find((m) => m.roles[0]?.name === b)?.roles[0]?.position ?? -1;
+    const roleAPosition =
+      members.find((m) => m.roles[0]?.name === a)?.roles[0]?.position ?? -1;
+    const roleBPosition =
+      members.find((m) => m.roles[0]?.name === b)?.roles[0]?.position ?? -1;
     return roleBPosition - roleAPosition;
   });
 
@@ -96,10 +101,14 @@ export const DSUserList: React.FC<UserListProps> = ({
                   selectedServer={selectedServer}
                   isUpdating={isUpdating === member.user_id}
                   onNicknameChange={(nickname) => {
-                    const originalIndex = members.findIndex(m => m.user_id === member.user_id);
+                    const originalIndex = members.findIndex(
+                      (m) => m.user_id === member.user_id
+                    );
                     onNicknameChange(originalIndex, nickname);
                   }}
-                  onApplyNickname={() => onApplyNickname(member.user_id, member.nickname)}
+                  onApplyNickname={() =>
+                    onApplyNickname(member.user_id, member.nickname)
+                  }
                 />
               </motion.div>
             ))}
@@ -111,5 +120,3 @@ export const DSUserList: React.FC<UserListProps> = ({
 };
 
 export default DSUserList;
-
-
