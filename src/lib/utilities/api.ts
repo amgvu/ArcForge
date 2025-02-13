@@ -208,10 +208,50 @@ export const createArc = async (
 };
 
 export const deleteArc = async (arcId: number): Promise<void> => {
-  const { error } = await supabase.from("arcs").delete().eq("id", arcId);
+  const { data: arcNicknames, error: fetchError } = await supabase
+    .from("arc_nicknames")
+    .select("guild_id, user_id, nickname")
+    .eq("arc_id", arcId);
 
-  if (error) {
-    throw new Error(`Failed to delete arc: ${error.message}`);
+  if (fetchError) {
+    throw new Error(`Failed to fetch arc nicknames: ${fetchError.message}`);
+  }
+
+  if (arcNicknames && arcNicknames.length > 0) {
+    for (const nickname of arcNicknames) {
+      const { error: deleteNicknameError } = await supabase
+        .from("nicknames")
+        .delete()
+        .eq("guild_id", nickname.guild_id)
+        .eq("user_id", nickname.user_id)
+        .eq("nickname", nickname.nickname);
+
+      if (deleteNicknameError) {
+        throw new Error(
+          `Failed to delete nickname: ${deleteNicknameError.message}`
+        );
+      }
+    }
+  }
+
+  const { error: deleteArcNicknamesError } = await supabase
+    .from("arc_nicknames")
+    .delete()
+    .eq("arc_id", arcId);
+
+  if (deleteArcNicknamesError) {
+    throw new Error(
+      `Failed to delete arc nicknames: ${deleteArcNicknamesError.message}`
+    );
+  }
+
+  const { error: deleteArcError } = await supabase
+    .from("arcs")
+    .delete()
+    .eq("id", arcId);
+
+  if (deleteArcError) {
+    throw new Error(`Failed to delete arc: ${deleteArcError.message}`);
   }
 };
 
