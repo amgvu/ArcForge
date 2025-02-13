@@ -64,11 +64,11 @@ export default function Home() {
               }}
             >
               <span>Marvel</span>
-              <span>LOTR</span>
+              <span>Squid Game</span>
               <span>Pokemon</span>
-              <span>DC</span>
+              <span>The Boys</span>
               <span>Star Wars</span>
-              <span>Actors</span>
+              <span>Game Of Thrones</span>
               <span>The Sopranos</span>
               <span>League of Legends</span>
               <span>Severance</span>

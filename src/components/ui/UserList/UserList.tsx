@@ -73,6 +73,15 @@ export const DSUserList: React.FC<UserListProps> = ({
     return roleBPosition - roleAPosition;
   });
 
+  const userIndexMapping: { [key: string]: number } = {};
+  let globalIndex = 0;
+
+  sortedRoles.forEach((roleName) => {
+    groupedMembers[roleName].forEach((member) => {
+      userIndexMapping[member.user_id] = globalIndex++;
+    });
+  });
+
   return (
     <div className={styles.scrollContainer}>
       <div className={styles.container}>
@@ -87,11 +96,11 @@ export const DSUserList: React.FC<UserListProps> = ({
             <div className="text-md font-semibold border-b border-neutral-700 pb-2 mb-4">
               {roleName}
             </div>
-            {groupedMembers[roleName].map((member, memberIndex) => (
+            {groupedMembers[roleName].map((member) => (
               <motion.div
                 key={`${member.user_id}-${animationKey}`}
                 className="mb-4"
-                custom={memberIndex}
+                custom={userIndexMapping[member.user_id]}
                 initial="initial"
                 animate={isApplyingAll ? "animate" : "initial"}
                 variants={shiftVariants}
@@ -101,10 +110,10 @@ export const DSUserList: React.FC<UserListProps> = ({
                   selectedServer={selectedServer}
                   isUpdating={isUpdating === member.user_id}
                   onNicknameChange={(nickname) => {
-                    const originalIndex = members.findIndex(
-                      (m) => m.user_id === member.user_id
+                    onNicknameChange(
+                      userIndexMapping[member.user_id],
+                      nickname
                     );
-                    onNicknameChange(originalIndex, nickname);
                   }}
                   onApplyNickname={() =>
                     onApplyNickname(member.user_id, member.nickname)

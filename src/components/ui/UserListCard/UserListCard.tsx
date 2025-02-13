@@ -142,7 +142,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
             }}
           />
         </div>
-        <div className="w-2/3 flex flex-col justify-center">
+        <div className="w-2/3 text-xl flex flex-col justify-center">
           <DSInput
             value={inputValue}
             onChange={handleInputChange}
