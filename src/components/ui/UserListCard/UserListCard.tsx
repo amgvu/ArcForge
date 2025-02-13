@@ -120,9 +120,13 @@ export const UserListCard: React.FC<UserListCardProps> = ({
     <motion.div
       initial={{ y: 0 }}
       animate={controls}
-      className={`${styles.card} relative bg-clip-border bg-no-repeat bg-left`}
+      className={`${styles.card} relative bg-no-repeat bg-left`}
       style={{ backgroundImage: `url(${member.avatar_url})` }}
     >
+      <div
+        className={`relative bg-no-repeat bg-left`}
+        style={{ backgroundImage: `url(${member.avatar_url})` }}
+      ></div>
       <div className="absolute inset-0 bg-black/5"></div>
       <div className="flex items-center space-x-4 relative z-10">
         <div className="w-1/3 h-full flex-shrink-0 relative">
