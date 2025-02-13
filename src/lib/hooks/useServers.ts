@@ -12,17 +12,12 @@ export const useServers = () => {
     const getServers = async () => {
       if (session?.accessToken && session.user?.id) {
         try {
-          const cachedServers = localStorage.getItem('cachedServers');
-          if (cachedServers) {
-            setServers(JSON.parse(cachedServers));
-            return;
-          }
-
           const data = await fetchServers(session.accessToken, session.user.id);
           setServers(data);
-          localStorage.setItem('cachedServers', JSON.stringify(data));
         } catch (error) {
-          setError(error instanceof Error ? error.message : 'Failed to fetch servers');
+          setError(
+            error instanceof Error ? error.message : "Failed to fetch servers"
+          );
         }
       }
     };
