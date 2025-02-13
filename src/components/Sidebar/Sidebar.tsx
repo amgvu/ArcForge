@@ -22,12 +22,12 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     { name: "Home", href: "/", icon: <Home className="h-5 w-5" /> },
     ...(session
       ? [
-        {
-          name: "ArcPanel",
-          href: "/dashboard",
-          icon: <Aperture className="h-5 w-5" />,
-        },
-      ]
+          {
+            name: "Dashboard",
+            href: "/dashboard",
+            icon: <Aperture className="h-5 w-5" />,
+          },
+        ]
       : []),
 
     {

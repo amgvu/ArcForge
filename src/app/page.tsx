@@ -10,7 +10,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowTextLoop(true);
-    }, 4000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);

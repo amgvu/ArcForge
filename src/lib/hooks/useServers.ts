@@ -22,7 +22,13 @@ export const useServers = () => {
       }
     };
 
-    getServers();
+    if (session) {
+      const timeoutId = setTimeout(() => {
+        getServers();
+      }, 500);
+
+      return () => clearTimeout(timeoutId);
+    }
   }, [session]);
 
   return { servers, error };
