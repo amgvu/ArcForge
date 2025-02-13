@@ -1,7 +1,3 @@
 export default function GettingStarted() {
-    // Onboarding
-    return(
-        <main>
-        </main>
-    )
+  return <main>Getting Started</main>;
 }

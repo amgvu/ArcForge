@@ -20,7 +20,7 @@ export default function LoginPage() {
 
         <DSButton
           onClick={handleDiscordLogin}
-          className="w-full flex items-center justify-center gap-2 bg-[#5865F2] hover:bg-[#4752C4] text-white py-6"
+          className="w-full flex items-center justify-center gap-2 text-white py-6"
         >
           Sign In with Discord
         </DSButton>
