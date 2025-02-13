@@ -181,10 +181,12 @@ export default function Dashboard() {
                   experimental
                 </h2>
                 <h3 className="font-light mt-1 text-sm text-neutral-400">
-                  Generate themes for arcs and apply them within seconds
+                  Generate characters or objects for arcs and apply them within
+                  seconds
                 </h3>
 
                 <div className="mt-4">
+                  <h3 className="text-sm mb-2">Characters</h3>
                   <DSInput
                     className="transition-all bg-neutral-800 border rounded-lg border-neutral-600"
                     placeholder="Enter a movie, show, game, etc"

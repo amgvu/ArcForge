@@ -8,14 +8,14 @@ export const characterGen = async (
   const genAI = new GoogleGenerativeAI(apiKey);
 
   const schema = {
-    description: `List of popular characters or objects related to a given theme.`,
+    description: `List of popular characters related to a given theme from most to least popular.`,
     type: SchemaType.ARRAY,
     items: {
       type: SchemaType.OBJECT,
       properties: {
         name: {
           type: SchemaType.STRING,
-          description: "Name of the character or object",
+          description: "Name of the character",
           nullable: false,
         },
       },
@@ -31,7 +31,15 @@ export const characterGen = async (
     },
   });
 
-  const prompt = `List ${numMembers} popular characters given the theme, ${theme}, ordered from most to least popular. Please omit any explanations, disclaimers, or unnecessary text.`;
+  const prompt = `List ${numMembers} popular characters related to the theme "${theme}",
+   ordered from most to least popular.  For the purposes of this list, "popularity" should
+    be determined by a combination of factors, including frequency of online mentions, fan
+     sentiment (positive or negative), critical acclaim, and relevance to the core themes of
+      "${theme}".  Return ONLY a JSON array of character names, with no other text or explanations.
+        The JSON array should be formatted as follows: ["Character 1", "Character 2", "Character 3", ...].
+          Character 1 should be the most popular, Character 2 the second most, and so on.  If fewer than
+           ${numMembers} relevant characters exist, return all that you can find. Please omit any explanations,
+            disclaimers, or unnecessary text.`;
 
   try {
     const result = await model.generateContent(prompt);
