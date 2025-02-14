@@ -73,15 +73,6 @@ export const DSUserList: React.FC<UserListProps> = ({
     return roleBPosition - roleAPosition;
   });
 
-  const userIndexMapping: { [key: string]: number } = {};
-  let globalIndex = 0;
-
-  sortedRoles.forEach((roleName) => {
-    groupedMembers[roleName].forEach((member) => {
-      userIndexMapping[member.user_id] = globalIndex++;
-    });
-  });
-
   const memberIndices = members.reduce((acc, member, index) => {
     acc[member.user_id] = index;
     return acc;
