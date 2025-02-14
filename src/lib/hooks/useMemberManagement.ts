@@ -17,9 +17,17 @@ export const useMemberManagement = (
   }, [fetchedMembers]);
 
   const handleNicknameChange = (index: number, nickname: string) => {
-    const updatedMembers = [...members];
-    updatedMembers[index] = { ...updatedMembers[index], nickname };
-    setMembers(updatedMembers);
+    setMembers((prevMembers) => {
+      const updatedMembers = [...prevMembers];
+      const memberToUpdate = updatedMembers[index];
+      if (memberToUpdate) {
+        updatedMembers[index] = {
+          ...memberToUpdate,
+          nickname,
+        };
+      }
+      return updatedMembers;
+    });
   };
 
   const handleUpdateNickname = async (

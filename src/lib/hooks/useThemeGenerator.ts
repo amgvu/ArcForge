@@ -64,6 +64,8 @@ export const useThemeGenerator = (
           generatedNames[index] || member.nickname;
       });
 
+      console.log(generatedNames);
+
       const updatedMembers = members.map((member) => ({
         ...member,
         nickname: nicknameMapping[member.user_id],

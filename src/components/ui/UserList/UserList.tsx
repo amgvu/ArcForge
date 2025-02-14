@@ -82,6 +82,11 @@ export const DSUserList: React.FC<UserListProps> = ({
     });
   });
 
+  const memberIndices = members.reduce((acc, member, index) => {
+    acc[member.user_id] = index;
+    return acc;
+  }, {} as Record<string, number>);
+
   return (
     <div className={styles.scrollContainer}>
       <div className={styles.container}>
@@ -100,7 +105,7 @@ export const DSUserList: React.FC<UserListProps> = ({
               <motion.div
                 key={`${member.user_id}-${animationKey}`}
                 className="mb-4"
-                custom={userIndexMapping[member.user_id]}
+                custom={memberIndices[member.user_id]}
                 initial="initial"
                 animate={isApplyingAll ? "animate" : "initial"}
                 variants={shiftVariants}
@@ -110,10 +115,7 @@ export const DSUserList: React.FC<UserListProps> = ({
                   selectedServer={selectedServer}
                   isUpdating={isUpdating === member.user_id}
                   onNicknameChange={(nickname) => {
-                    onNicknameChange(
-                      userIndexMapping[member.user_id],
-                      nickname
-                    );
+                    onNicknameChange(memberIndices[member.user_id], nickname);
                   }}
                   onApplyNickname={() =>
                     onApplyNickname(member.user_id, member.nickname)

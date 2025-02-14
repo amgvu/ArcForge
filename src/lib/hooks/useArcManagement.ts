@@ -11,7 +11,7 @@ import {
 export const useArcManagement = (
   selectedServer: string,
   members: Member[],
-  setMembers: (members: Member[]) => void
+  setMembers: React.Dispatch<React.SetStateAction<Member[]>>
 ) => {
   const [selectedArc, setSelectedArc] = useState<Arc | null>(null);
   const [isSavingArc, setIsSavingArc] = useState(false);
@@ -22,24 +22,28 @@ export const useArcManagement = (
         try {
           const arcNicknames = await fetchArcNicknames(selectedArc.id);
 
-          const updatedMembers = members.map((member: Member) => {
-            const arcNickname = arcNicknames.find(
-              (an) => an.user_id === member.user_id
-            );
-            return arcNickname
-              ? { ...member, nickname: arcNickname.nickname }
-              : member;
+          setMembers((prevMembers) => {
+            return prevMembers.map((member) => {
+              const arcNickname = arcNicknames.find(
+                (an) => an.user_id === member.user_id
+              );
+              return arcNickname
+                ? { ...member, nickname: arcNickname.nickname }
+                : { ...member };
+            });
           });
-
-          setMembers(updatedMembers);
         } catch (error) {
           console.error("Failed to fetch arc nicknames:", error);
         }
+      } else {
+        setMembers((prevMembers) =>
+          prevMembers.map((member) => ({ ...member, nickname: "" }))
+        );
       }
     };
 
     loadArcNicknames();
-  }, [selectedArc, setMembers, members]);
+  }, [selectedArc, setMembers]);
 
   const handleSaveArc = async () => {
     if (!selectedServer || !selectedArc || !selectedArc.arc_name) {
