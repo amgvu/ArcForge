@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { LoaderPinwheel } from "lucide-react";
 import {
   DSButton,
   DSMenu,
@@ -198,7 +199,11 @@ export default function Dashboard() {
                       onClick={handleGenerateCharacters}
                       disabled={loading}
                     >
-                      Generate
+                      {loading ? (
+                        <LoaderPinwheel className="animate-spin w-5 h-5" />
+                      ) : (
+                        "Generate"
+                      )}
                     </DSButton>
                   </div>
                 </div>

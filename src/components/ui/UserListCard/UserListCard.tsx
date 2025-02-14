@@ -129,7 +129,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
       ></div>
       <div className="absolute inset-0 bg-black/5"></div>
       <div className="flex items-center space-x-4 relative z-10">
-        <div className="w-1/3 h-full flex-shrink-0 relative">
+        <div className="h-full flex-shrink-0 relative">
           <img
             src={member.avatar_url}
             alt={`${member.username}'s avatar`}
@@ -142,7 +142,7 @@ export const UserListCard: React.FC<UserListCardProps> = ({
             }}
           />
         </div>
-        <div className="w-2/3 text-xl flex flex-col justify-center">
+        <div className="w-full text-xl flex flex-col justify-center">
           <DSInput
             value={inputValue}
             onChange={handleInputChange}
